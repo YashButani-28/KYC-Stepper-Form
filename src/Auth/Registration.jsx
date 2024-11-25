@@ -1,5 +1,5 @@
 import Input from "../FormComponents/Input";
-import SelectInput from "../FormComponents/selectInput";
+import SelectInput from "../FormComponents/SelectInput";
 import AuthPageImage from "./AuthPageImage";
 
 export default function Registration() {
