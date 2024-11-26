@@ -12,8 +12,8 @@ export default function SelectInput({ label, ...props }) {
         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         {...props}
       >
-        <option value="user">Admin</option>
-        <option value="admin">User</option>
+        <option value="Admin">Admin</option>
+        <option value="User">User</option>
       </select>
     </div>
   );

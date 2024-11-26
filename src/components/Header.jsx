@@ -2,6 +2,7 @@ import logo from "../assets/icons/logo.svg";
 import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
+import Navigation from "./Navigation";
 
 export default function Header() {
   return (
@@ -53,6 +54,7 @@ export default function Header() {
           </div>
         </div>
       </header>
+      <Navigation />
     </>
   );
 }
