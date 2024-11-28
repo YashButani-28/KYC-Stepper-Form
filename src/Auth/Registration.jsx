@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import AuthPageImage from "./AuthPageImage";
 import Input from "../FormComponents/Input";
 import SelectInput from "../FormComponents/SelectInput";
@@ -10,6 +10,7 @@ export default function Registration() {
   // const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
   const [data, setData] = useState({
+    id: "",
     name: "",
     email: "",
     contact_no: "",
@@ -22,6 +23,8 @@ export default function Registration() {
     { value: "User", label: "User" },
   ];
 
+  const userId = useId();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -30,13 +33,27 @@ export default function Registration() {
     }));
   };
 
-  const storeDataInLocalStorage = (userData) => {
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    existingUsers.push(userData);
-    localStorage.setItem("users", JSON.stringify(existingUsers));
+  // const storeDataInLocalStorage = (userData) => {
+  //   const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+  //   existingUsers.push(userData);
+  //   localStorage.setItem("users", JSON.stringify(existingUsers));
+  // };
+
+  // to generate unique id for the register user
+  const generateUniqueId = () => {
+    let uniqueId;
+    do {
+      uniqueId = Math.floor(Math.random() * 1000000);
+    } while (isIdExist(uniqueId));
+    return uniqueId;
   };
 
-  const handlechangeSubmit = (e) => {
+  // to check unique id is exists or not
+  const isIdExist = (id) => {
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    return existingUsers.some((user) => user.id === id);
+  };
+  const handlechangeSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -46,21 +63,48 @@ export default function Registration() {
       !data.role ||
       !data.password
     ) {
-      setError("All field are empty");
+      setError("All field are Required");
       return;
     }
     setError("");
-    storeDataInLocalStorage(data);
-    console.log(data);
 
-    setData({
-      name: "",
-      email: "",
-      contact_no: "",
-      role: "",
-      password: "", // Resetting password and email along with other fields
-    });
-    navigate("/login");
+    const userData = {
+      id: generateUniqueId(), // unique id for the register user
+      name: data.name,
+      email: data.email,
+      contact_no: data.contact_no,
+      role: data.role,
+      password: data.password,
+    };
+
+    try {
+      // Send POST request to the JSON server to store user data
+      const response = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register user. Please try again.");
+      }
+      // storeDataInLocalStorage(userData);
+      // console.log(userData);
+      setData({
+        id: "",
+        name: "",
+        email: "",
+        contact_no: "",
+        role: "",
+        password: "", // Resetting password and email along with other fields
+      });
+      navigate("/login");
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Failed to register user. Please try again.");
+    }
   };
 
   return (
