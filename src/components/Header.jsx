@@ -4,7 +4,7 @@ import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
 import Logout from "../Auth/logout";
 
@@ -12,28 +12,17 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { username, role } = location.state || {};
+  const [showDropDown, setShowDropDown] = useState(false);
   console.log(username, role);
 
-  // useEffect(() => {
-  //   const authToken = localStorage.getItem("authToken");
-  //   if (!authToken) {
-  //     // If the token doesn't exist, remove any user state and redirect to login
-  //     localStorage.removeItem("authToken");
-  //     navigate("/login");
-  //     return;
-  //   }
-  //   const checkAndLogout = async () => {
-  //     const isUserExist = await checkUserExistence(username);
-  //     if (!isUserExist) {
-  //       localStorage.removeItem("authToken");
-  //       navigate("/login");
-  //     }
-  //   };
+  const handleMouseEnter = () => {
+    setShowDropDown(true);
+  };
 
-  //   if (username) {
-  //     checkAndLogout();
-  //   }
-  // }, [username, navigate]);
+  // Function to hide the dropdown when the mouse leaves
+  const handleMouseLeave = () => {
+    setShowDropDown(false);
+  };
 
   useEffect(() => {
     const checkAndLogout = async () => {
@@ -72,17 +61,33 @@ export default function Header() {
           </div>
 
           <div className="flex gap-8 items-center">
-            <div className="account-details flex gap-1 cursor-pointer">
+            <div
+              className="account-details flex gap-1 cursor-pointer relative h-full items-center"
+              // onClick={handleDropDownTogle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               <img
                 src={bankAccountLogo}
                 alt="Bank icon logo"
                 className="size-[20px]"
               />
-              <Link to="/logout" className="text-primary text-[14px] ">
+              <span to="/" className="text-primary text-[14px]">
                 Account
-              </Link>
+              </span>
+              {showDropDown && (
+                <div className="dropdown-container absolute  top-[30px] right-[-10px] mt-2 p-2 border bg-white shadow-lg rounded min-w-[80px]">
+                  <Link
+                    to="/logout"
+                    className="text-primary text-[14px] flex justify-center  hover:underline"
+                    handleMouseEnter
+                  >
+                    Logout
+                  </Link>
+                </div>
+              )}
             </div>
-            <div className="profile flex gap-2 min-w-[120px] justify-center items-center">
+            <div className="profile flex gap-2 min-w-[150px] justify-center items-center">
               <img
                 src={profilePhoto}
                 alt="User profile picture"
