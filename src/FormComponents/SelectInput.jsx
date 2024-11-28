@@ -1,20 +1,38 @@
-export default function SelectInput({ label, ...props }) {
+// import React, { forwardRef } from "react";
+
+const SelectInput = ({
+  options,
+  important,
+  value,
+  onChange,
+  label,
+  placeholder,
+  className = "",
+}) => {
   return (
-    <div className="w-full max-w-sm mb-6">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor={label}
-      >
-        Choose {label}
-      </label>
+    <>
+      {label && (
+        <label className=" block text-gray-700 text-sm font-bold">
+          {label}
+          {important && <span className="text-red-500">*</span>}
+        </label>
+      )}
       <select
-        name={label}
-        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-        {...props}
+        value={value}
+        onChange={onChange}
+        className={`w-full p-2 rounded border border-[#ccc] ${className}`}
       >
-        <option value="Admin">Admin</option>
-        <option value="User">User</option>
+        <option value="" disabled>
+          {placeholder || "Select your role"}
+        </option>
+        {options?.map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
-    </div>
+    </>
   );
-}
+};
+
+export default SelectInput;

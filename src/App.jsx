@@ -18,10 +18,10 @@ const router = createBrowserRouter([
     path: "/registration",
     element: <Registration />,
   },
-  {
-    path: "/auth",
-    element: <Index />,
-  },
+  // {
+  //   path: "/auth",
+  //   element: <Index />,
+  // },
   {
     path: "/header",
     element: <Header />,
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  console.log(import.meta.env.VITE_APPWRITE_URL);
+  // console.log(import.meta.env.VITE_APPWRITE_URL);
   return <RouterProvider router={router} />;
 }
 

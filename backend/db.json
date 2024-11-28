@@ -1,0 +1,37 @@
+{
+    "users": [
+        {
+            "username": "user1",
+            "password": "password123",
+            "kycForms": {
+                "form1": {
+                    "field1": "value1",
+                    "field2": "value2"
+                },
+                "form2": {
+                    "field1": "value1",
+                    "field2": "value2"
+                },
+                "form3": {
+                    "field1": "value1",
+                    "field2": "value2"
+                },
+                "form4": {
+                    "field1": "value1",
+                    "field2": "value2"
+                }
+            }
+        },
+        {
+            "username": "user2",
+            "password": "password456",
+            "kycForms": {
+                "form1": {
+                    "field1": "value3",
+                    "field2": "value4"
+                }
+            }
+        }
+    ],
+    "currentUser": "user1"
+}

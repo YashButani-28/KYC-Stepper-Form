@@ -1,24 +1,38 @@
-export default function Input({
-  label,
-  placeholder,
-  type = "text",
-  value,
-  ...props
-}) {
+import { forwardRef, useRef } from "react";
+
+function Input(
+  {
+    label,
+    important,
+    type = "text",
+    name,
+    value,
+    onChange,
+    className = "",
+    ...props
+  },
+  ref
+) {
   return (
     <>
-      <label className="block text-gray-700 text-sm font-bold" htmlFor={label}>
-        {label}
-      </label>
+      {label && (
+        <label className="block text-gray-700 text-sm font-bold">
+          {label}
+          {important && <span className="text-red-500">*</span>}
+        </label>
+      )}
       <input
         type={type}
-        name={label}
+        name={name}
         value={value}
-        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
-        style={{ "margin-top": "8px" }}
-        placeholder={placeholder}
+        ref={ref}
+        onChange={onChange}
+        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+        // style={{ "margin-top": "8px" }}
         {...props}
       />
     </>
   );
 }
+
+export default forwardRef(Input);
