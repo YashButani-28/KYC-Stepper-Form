@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Index from "./Auth/Registration.jsx";
 import Login from "./Auth/Login.jsx";
 import Registration from "./Auth/Registration.jsx";
+import Logout from "./Auth/logout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,10 +19,10 @@ const router = createBrowserRouter([
     path: "/registration",
     element: <Registration />,
   },
-  // {
-  //   path: "/auth",
-  //   element: <Index />,
-  // },
+  {
+    path: "/logout",
+    element: <Logout />,
+  },
   {
     path: "/header",
     element: <Header />,
