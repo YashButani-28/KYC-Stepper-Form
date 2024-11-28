@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
+import Logout from "../Auth/logout";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -13,18 +14,51 @@ export default function Header() {
   const { username, role } = location.state || {};
   console.log(username, role);
 
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem("authToken");
+  //   if (!authToken) {
+  //     // If the token doesn't exist, remove any user state and redirect to login
+  //     localStorage.removeItem("authToken");
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   const checkAndLogout = async () => {
+  //     const isUserExist = await checkUserExistence(username);
+  //     if (!isUserExist) {
+  //       localStorage.removeItem("authToken");
+  //       navigate("/login");
+  //     }
+  //   };
+
+  //   if (username) {
+  //     checkAndLogout();
+  //   }
+  // }, [username, navigate]);
+
   useEffect(() => {
     const checkAndLogout = async () => {
-      const isUserExist = await checkUserExistence(username);
-      if (!isUserExist) {
+      // Check if the token exists in localStorage
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        // If the token doesn't exist, remove any user state and redirect to login
         localStorage.removeItem("authToken");
         navigate("/login");
+        window.location.reload(); // Refresh the page to re-evaluate the condition
+        return;
+      }
+
+      // If username exists, check if the user still exists
+      if (username) {
+        const isUserExist = await checkUserExistence(username);
+        if (!isUserExist) {
+          localStorage.removeItem("authToken");
+          navigate("/login");
+          window.location.reload(); // Refresh the page to re-evaluate the condition
+        }
       }
     };
 
-    if (username) {
-      checkAndLogout();
-    }
+    checkAndLogout();
   }, [username, navigate]);
   return (
     <>
@@ -44,7 +78,7 @@ export default function Header() {
                 alt="Bank icon logo"
                 className="size-[20px]"
               />
-              <Link to="/auth" className="text-primary text-[14px] ">
+              <Link to="/logout" className="text-primary text-[14px] ">
                 Account
               </Link>
             </div>

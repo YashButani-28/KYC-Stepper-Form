@@ -69,6 +69,14 @@
       "email": "Yash@gmas.com",
       "contact_no": "823838238839",
       "password": "mkndjdk"
+    },
+    {
+      "id": 329861,
+      "role": "Admin",
+      "name": "Anish",
+      "email": "anish@gmail.com",
+      "contact_no": "21221112212",
+      "password": "anish@123"
     }
   ],
   "currentUser": "user1"

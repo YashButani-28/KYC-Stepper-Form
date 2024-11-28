@@ -187,6 +187,7 @@ export default function Registration() {
               label="Password"
               name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               placeholder="Enter your Password"
               {...register("password", {
                 required: "Password is required",
