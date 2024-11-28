@@ -61,6 +61,14 @@
       "contact_no": "732382137",
       "role": "Admin",
       "password": "bhavesh@123"
+    },
+    {
+      "id": 327039,
+      "role": "Admin",
+      "name": "Yash",
+      "email": "Yash@gmas.com",
+      "contact_no": "823838238839",
+      "password": "mkndjdk"
     }
   ],
   "currentUser": "user1"

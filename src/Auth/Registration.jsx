@@ -1,47 +1,40 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import AuthPageImage from "./AuthPageImage";
 import Input from "../FormComponents/Input";
 import SelectInput from "../FormComponents/SelectInput";
 import AuthButtons from "../FormComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Registration() {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState(""); // To handle server errors
 
-  const [data, setData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    contact_no: "",
-    role: "",
-    password: "",
+  // React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    clearErrors,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      role: "", // Default role value for the select input
+    },
   });
 
-  const roles = [
-    { value: "Admin", label: "Admin" },
-    { value: "User", label: "User" },
-  ];
+  // Watch field values
+  const selectedRole = watch("role");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
+  // Generate Unique ID
   const generateUniqueId = async () => {
     let uniqueId;
     try {
-      // Fetch existing users to ensure the ID is unique
       const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users. Please try again.");
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch users.");
       const existingUsers = await response.json();
       do {
         uniqueId = Math.floor(Math.random() * 1000000);
@@ -52,65 +45,29 @@ export default function Registration() {
     return uniqueId;
   };
 
-  const handlechangeSubmit = async (e) => {
-    e.preventDefault();
-
-    if (
-      !data.name ||
-      !data.email ||
-      !data.contact_no ||
-      !data.role ||
-      !data.password
-    ) {
-      setError("All fields are required.");
-      return;
-    }
-    setError("");
-
+  // On form submission
+  const onSubmit = async (data) => {
+    setServerError(""); // Reset server error
     try {
-      // Fetch existing users from db.json
       const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users. Please try again.");
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch users.");
       const existingUsers = await response.json();
 
-      // Check if the email already exists and for what role
       const existingUserWithEmail = existingUsers.find(
         (user) => user.email === data.email
       );
 
-      if (existingUserWithEmail) {
-        if (existingUserWithEmail.role === data.role) {
-          setError("An account with this email and role already exists.");
-          return;
-        }
-        if (existingUserWithEmail.role === "Admin" && data.role === "Admin") {
-          setError(
-            "This email is already registered as an Admin. It can only be registered as a User."
-          );
-          return;
-        }
-        if (existingUserWithEmail.role === "Admin" && data.role === "User") {
-          setError(
-            "This email is already registered as an Admin. You can only register it as a User."
-          );
-          return;
-        }
+      if (existingUserWithEmail && existingUserWithEmail.role === data.role) {
+        setServerError("An account with this email and role already exists.");
+        return;
       }
 
       const newUserId = await generateUniqueId();
       const userData = {
-        id: newUserId, // Unique ID for the register user
-        name: data.name,
-        email: data.email,
-        contact_no: data.contact_no,
-        role: data.role,
-        password: data.password,
+        ...data,
+        id: newUserId, // Assign unique ID
       };
 
-      // Send POST request to save user data
       const postResponse = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: {
@@ -119,110 +76,157 @@ export default function Registration() {
         body: JSON.stringify(userData),
       });
 
-      if (!postResponse.ok) {
-        throw new Error("Failed to register user. Please try again.");
-      }
+      if (!postResponse.ok) throw new Error("Failed to register user.");
 
-      setData({
-        id: "",
-        name: "",
-        email: "",
-        contact_no: "",
-        role: "",
-        password: "", // Resetting password and email along with other fields
-      });
       navigate("/login");
     } catch (error) {
       console.error("Error:", error);
-      setError("Failed to register user. Please try again.");
+      setServerError("Failed to register user. Please try again.");
     }
   };
 
   return (
-    <>
-      <div className="Authentication-page flex w-full">
-        <AuthPageImage />
-
-        <div className="w-3/5 flex flex-col justify-center items-center bg-white px-10">
-          <h1 className="text-3xl font-bold mb-6">Register</h1>
-          <form
-            className="w-full max-w-sm space-y-4"
-            onSubmit={handlechangeSubmit}
-          >
+    <div className="Authentication-page flex w-full">
+      <AuthPageImage />
+      <div className="w-3/5 flex flex-col justify-center items-center bg-white px-10">
+        <h1 className="text-3xl font-bold mb-6">Register</h1>
+        <form
+          className="w-full max-w-sm space-y-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {/* Name Field */}
+          <div>
             <Input
               label="Name"
               name="name"
               placeholder="Enter your name"
-              important
-              onChange={handleChange}
-              required
-              value={data.name}
+              {...register("name", { required: "Name is required" })}
             />
+            {errors.name && (
+              <p className="text-red-500 text-sm ml-[10px]">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div>
             <Input
               label="Email"
               name="email"
               type="email"
               placeholder="Enter your email"
-              onChange={handleChange}
-              value={data.email}
-              required
-              important
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Email should like this, john.xyz@example",
+                },
+              })}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm ml-[10px]">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Mobile Number Field */}
+          <div>
             <Input
               label="Mobile Number"
               name="contact_no"
               type="number"
-              onChange={handleChange}
-              value={data.contact_no}
               placeholder="Enter your mobile number"
-              required
-              important
+              {...register("contact_no", {
+                required: "Mobile number is required",
+                minLength: {
+                  value: 10,
+                  message: "Mobile number must be at least 10 digits",
+                },
+                maxLength: {
+                  value: 12,
+                  message: "Mobile number must be at most 12   digits",
+                },
+              })}
             />
+            {errors.contact_no && (
+              <p className="text-red-500 text-sm ml-[10px]">
+                {errors.contact_no.message}
+              </p>
+            )}
+          </div>
+
+          {/* Role Field */}
+          <div>
             <SelectInput
               label="Choose Role"
-              options={roles}
-              value={data.role}
-              onChange={(e) => setData({ ...data, role: e.target.value })}
-              required
-              important
+              options={[
+                { value: "", label: "Select Role" },
+                { value: "Admin", label: "Admin" },
+                { value: "User", label: "User" },
+              ]}
+              {...register("role", {
+                required: "Role is required",
+              })}
+              onChange={(e) => {
+                setValue("role", e.target.value); // Update the value in React Hook Form
+                clearErrors("role"); // Clear error when value changes
+              }}
             />
-            <div className="relative">
-              <Input
-                label="Password"
-                name="password"
-                type={showPassword ? "text" : "password"} // Toggle between text and password
-                value={data.password}
-                onChange={handleChange}
-                placeholder="Enter your Password"
-                required
-                important
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                className="absolute top-[40px] right-[15px] text-gray-500"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-
-            {error && (
-              <p className="text-red-500 text-[14px] text-center">{error}</p>
+            {errors.role && (
+              <p className="text-red-500 text-sm ml-[10px]">
+                {errors.role.message}
+              </p>
             )}
-            <AuthButtons>Register</AuthButtons>
-          </form>
-
-          <div className="mt-4">
-            <p className="text-sm text-gray-600">
-              Have an account?{" "}
-              <Link to="/login" className="text-blue-500 hover:underline">
-                Login here
-              </Link>
-            </p>
           </div>
+
+          {/* Password Field */}
+          <div className="relative">
+            <Input
+              label="Password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your Password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+            />
+            <button
+              type="button"
+              className="absolute top-[40px] right-[15px] text-gray-500"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+            {errors.password && (
+              <p className="text-red-500 text-sm ml-[10px]">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Server Error */}
+          {serverError && (
+            <p className="text-red-500 text-sm text-center">{serverError}</p>
+          )}
+
+          <AuthButtons>Register</AuthButtons>
+        </form>
+
+        <div className="mt-4">
+          <p className="text-sm text-gray-600">
+            Have an account?{" "}
+            <Link to="/login" className="text-blue-500 hover:underline">
+              Login here
+            </Link>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

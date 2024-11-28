@@ -3,12 +3,29 @@ import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
 
 export default function Header() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { username, role } = location.state || {};
   console.log(username, role);
+
+  useEffect(() => {
+    const checkAndLogout = async () => {
+      const isUserExist = await checkUserExistence(username);
+      if (!isUserExist) {
+        localStorage.removeItem("authToken");
+        navigate("/login");
+      }
+    };
+
+    if (username) {
+      checkAndLogout();
+    }
+  }, [username, navigate]);
   return (
     <>
       <header className="p-[16px] items-center">
@@ -31,7 +48,7 @@ export default function Header() {
                 Account
               </Link>
             </div>
-            <div className="profile flex gap-2">
+            <div className="profile flex gap-2 min-w-[120px] justify-center items-center">
               <img
                 src={profilePhoto}
                 alt="User profile picture"
