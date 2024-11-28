@@ -3,8 +3,12 @@ import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
+  const location = useLocation();
+  const { username, role } = location.state || {};
+  console.log(username, role);
   return (
     <>
       <header className="p-[16px] items-center">
@@ -34,8 +38,8 @@ export default function Header() {
                 className="rounded-full border-2 border-primary size-[40px] "
               />
               <div className="flex flex-col ">
-                <h1 className="text-[14px] font-medium ">James D. Steele</h1>
-                <h1 className="text-[12px] ">Admin</h1>
+                <h1 className="text-[14px] font-medium ">{username || ""}</h1>
+                <h1 className="text-[12px] ">{role}</h1>
               </div>
             </div>
           </div>

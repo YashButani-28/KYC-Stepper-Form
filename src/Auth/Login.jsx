@@ -4,6 +4,7 @@ import SelectInput from "../FormComponents/SelectInput";
 import AuthPageImage from "./AuthPageImage";
 import { Link, useNavigate } from "react-router-dom";
 import AuthButtons from "../FormComponents/AuthButtons";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export default function Login() {
     role: "", // Default role selected
   });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const navigate = useNavigate();
 
   const roles = [
@@ -62,14 +64,15 @@ export default function Login() {
           localStorage.setItem("authToken", token);
 
           console.log("Login successful for user:", user);
-          console.log("Login successful for user:", user); // Debugging log
-          navigate("/header"); // Navigate to the desired page
+          navigate("/header", {
+            state: { username: user.name, role: user.role },
+          }); // Navigate to the desired page
         } else {
-          console.log("Incorrect password for user:", user.email); // Debugging log
+          console.log("Incorrect password for user:", user.email);
           setError("Incorrect password. Please try again.");
         }
       } else {
-        console.log("No user found matching the provided email and role."); // Debugging log
+        console.log("No user found matching the provided email and role.");
         setError(
           "No account found with this email and role. Please create one."
         );
@@ -107,17 +110,26 @@ export default function Login() {
               required
               important
             />
-            <Input
-              label="Password"
-              name="password"
-              type="password"
-              placeholder="Enter your Password"
-              required
-              important
-              autoComplete="new-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
+            <div className=" relative">
+              <Input
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"} // Toggle between text and password
+                placeholder="Enter your Password"
+                required
+                important
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <button
+                type="button"
+                className="absolute top-[40px] right-[15px] text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             {error && (
               <p className="text-red-500 text-[14px] text-center">{error}</p>
             )}

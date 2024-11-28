@@ -14,9 +14,9 @@ function Input(
   ref
 ) {
   return (
-    <>
+    <div>
       {label && (
-        <label className="block text-gray-700 text-sm font-bold">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
           {label}
           {important && <span className="text-red-500">*</span>}
         </label>
@@ -27,11 +27,11 @@ function Input(
         value={value}
         ref={ref}
         onChange={onChange}
-        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+        className={`w-full px-3 py-2 border rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
         // style={{ "margin-top": "8px" }}
         {...props}
       />
-    </>
+    </div>
   );
 }
 

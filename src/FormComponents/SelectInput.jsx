@@ -10,9 +10,9 @@ const SelectInput = ({
   className = "",
 }) => {
   return (
-    <>
+    <div>
       {label && (
-        <label className=" block text-gray-700 text-sm font-bold">
+        <label className=" block text-gray-700 text-sm font-bold mb-2">
           {label}
           {important && <span className="text-red-500">*</span>}
         </label>
@@ -31,7 +31,7 @@ const SelectInput = ({
           </option>
         ))}
       </select>
-    </>
+    </div>
   );
 };
 

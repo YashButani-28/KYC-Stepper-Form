@@ -1,14 +1,16 @@
-import { useState, useId } from "react";
+import { useState } from "react";
 import AuthPageImage from "./AuthPageImage";
 import Input from "../FormComponents/Input";
 import SelectInput from "../FormComponents/SelectInput";
 import AuthButtons from "../FormComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
+
 export default function Registration() {
   const navigate = useNavigate();
-  // const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
   const [data, setData] = useState({
     id: "",
     name: "",
@@ -23,8 +25,6 @@ export default function Registration() {
     { value: "User", label: "User" },
   ];
 
-  const userId = useId();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prevState) => ({
@@ -33,26 +33,25 @@ export default function Registration() {
     }));
   };
 
-  // const storeDataInLocalStorage = (userData) => {
-  //   const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-  //   existingUsers.push(userData);
-  //   localStorage.setItem("users", JSON.stringify(existingUsers));
-  // };
-
-  // to generate unique id for the register user
-  const generateUniqueId = () => {
+  const generateUniqueId = async () => {
     let uniqueId;
-    do {
-      uniqueId = Math.floor(Math.random() * 1000000);
-    } while (isIdExist(uniqueId));
+    try {
+      // Fetch existing users to ensure the ID is unique
+      const response = await fetch("http://localhost:3000/users");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users. Please try again.");
+      }
+
+      const existingUsers = await response.json();
+      do {
+        uniqueId = Math.floor(Math.random() * 1000000);
+      } while (existingUsers.some((user) => user.id === uniqueId));
+    } catch (error) {
+      console.error("Error generating unique ID:", error);
+    }
     return uniqueId;
   };
 
-  // to check unique id is exists or not
-  const isIdExist = (id) => {
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    return existingUsers.some((user) => user.id === id);
-  };
   const handlechangeSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,23 +62,56 @@ export default function Registration() {
       !data.role ||
       !data.password
     ) {
-      setError("All field are Required");
+      setError("All fields are required.");
       return;
     }
     setError("");
 
-    const userData = {
-      id: generateUniqueId(), // unique id for the register user
-      name: data.name,
-      email: data.email,
-      contact_no: data.contact_no,
-      role: data.role,
-      password: data.password,
-    };
-
     try {
-      // Send POST request to the JSON server to store user data
-      const response = await fetch("http://localhost:3000/users", {
+      // Fetch existing users from db.json
+      const response = await fetch("http://localhost:3000/users");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users. Please try again.");
+      }
+
+      const existingUsers = await response.json();
+
+      // Check if the email already exists and for what role
+      const existingUserWithEmail = existingUsers.find(
+        (user) => user.email === data.email
+      );
+
+      if (existingUserWithEmail) {
+        if (existingUserWithEmail.role === data.role) {
+          setError("An account with this email and role already exists.");
+          return;
+        }
+        if (existingUserWithEmail.role === "Admin" && data.role === "Admin") {
+          setError(
+            "This email is already registered as an Admin. It can only be registered as a User."
+          );
+          return;
+        }
+        if (existingUserWithEmail.role === "Admin" && data.role === "User") {
+          setError(
+            "This email is already registered as an Admin. You can only register it as a User."
+          );
+          return;
+        }
+      }
+
+      const newUserId = await generateUniqueId();
+      const userData = {
+        id: newUserId, // Unique ID for the register user
+        name: data.name,
+        email: data.email,
+        contact_no: data.contact_no,
+        role: data.role,
+        password: data.password,
+      };
+
+      // Send POST request to save user data
+      const postResponse = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,11 +119,10 @@ export default function Registration() {
         body: JSON.stringify(userData),
       });
 
-      if (!response.ok) {
+      if (!postResponse.ok) {
         throw new Error("Failed to register user. Please try again.");
       }
-      // storeDataInLocalStorage(userData);
-      // console.log(userData);
+
       setData({
         id: "",
         name: "",
@@ -126,10 +157,7 @@ export default function Registration() {
               onChange={handleChange}
               required
               value={data.name}
-              // {...register("name", { required: true })}
             />
-
-            {error && <p>{error.message}</p>}
             <Input
               label="Email"
               name="email"
@@ -139,8 +167,6 @@ export default function Registration() {
               value={data.email}
               required
               important
-
-              // {...register("email", { required: true })}
             />
             <Input
               label="Mobile Number"
@@ -148,10 +174,9 @@ export default function Registration() {
               type="number"
               onChange={handleChange}
               value={data.contact_no}
-              placeholder="Enter your mobile number "
+              placeholder="Enter your mobile number"
               required
               important
-              // {...register("contact_no", { required: true })}
             />
             <SelectInput
               label="Choose Role"
@@ -160,24 +185,30 @@ export default function Registration() {
               onChange={(e) => setData({ ...data, role: e.target.value })}
               required
               important
-              // {...register("role", { required: true })}
             />
-            <Input
-              label="Password"
-              name="password"
-              type="password"
-              value={data.password}
-              onChange={handleChange}
-              placeholder="Enter your Password"
-              required
-              important
-              autoComplete="new-password"
-              // {...register("password", { required: true })}
-            />
+            <div className="relative">
+              <Input
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"} // Toggle between text and password
+                value={data.password}
+                onChange={handleChange}
+                placeholder="Enter your Password"
+                required
+                important
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="absolute top-[40px] right-[15px] text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
             {error && (
-              <p className="text-red-500 text-[14px] text-center">
-                Failed to register your account. Please try again.
-              </p>
+              <p className="text-red-500 text-[14px] text-center">{error}</p>
             )}
             <AuthButtons>Register</AuthButtons>
           </form>
