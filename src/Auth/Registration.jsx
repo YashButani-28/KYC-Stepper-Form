@@ -6,6 +6,7 @@ import SelectInput from "../FormComponents/SelectInput";
 import AuthButtons from "../FormComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 export default function Registration() {
   const navigate = useNavigate();
@@ -33,9 +34,10 @@ export default function Registration() {
   const generateUniqueId = async () => {
     let uniqueId;
     try {
-      const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) throw new Error("Failed to fetch users.");
-      const existingUsers = await response.json();
+      const response = await axios.get("http://localhost:3000/users");
+      // if (!response.ok) throw new Error("Failed to fetch users.");
+
+      const existingUsers = response.data;
       do {
         uniqueId = Math.floor(Math.random() * 1000000);
       } while (existingUsers.some((user) => user.id === uniqueId));
@@ -49,9 +51,9 @@ export default function Registration() {
   const onSubmit = async (data) => {
     setServerError(""); // Reset server error
     try {
-      const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) throw new Error("Failed to fetch users.");
-      const existingUsers = await response.json();
+      const response = await axios.get("http://localhost:3000/users");
+      // if (!response.ok) throw new Error("Failed to fetch users.");
+      const existingUsers = response.data;
 
       const existingUserWithEmail = existingUsers.find(
         (user) => user.email === data.email
@@ -68,15 +70,7 @@ export default function Registration() {
         id: newUserId, // Assign unique ID
       };
 
-      const postResponse = await fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!postResponse.ok) throw new Error("Failed to register user.");
+      await axios.post("http://localhost:3000/users", userData);
 
       navigate("/login");
     } catch (error) {

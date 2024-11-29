@@ -6,6 +6,7 @@ import AuthPageImage from "./AuthPageImage";
 import { Link, useNavigate } from "react-router-dom";
 import AuthButtons from "../FormComponents/AuthButtons";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
+import axios from "axios";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,10 +36,9 @@ export default function Login() {
   const onSubmit = async (data) => {
     setServerError(""); // Reset server error
     try {
-      const response = await fetch("http://localhost:3000/users"); // Adjust the URL as needed
-      if (!response.ok) throw new Error("Failed to fetch users.");
+      const response = await axios.get("http://localhost:3000/users"); // Adjust the URL as needed
 
-      const users = await response.json();
+      const users = await response.data;
 
       const user = users.find(
         (user) => user.email === data.email && user.role === data.role

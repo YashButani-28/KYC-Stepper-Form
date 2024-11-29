@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 export default function Navigation() {
   return (
@@ -46,6 +46,9 @@ export default function Navigation() {
             <li className="">Address Details</li>
           </NavLink>
         </ul>
+      </div>
+      <div>
+        <Outlet />
       </div>
     </>
   );

@@ -6,14 +6,13 @@ import Navigation from "./Navigation";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
-import Logout from "../Auth/logout";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { username, role } = location.state || {};
   const [showDropDown, setShowDropDown] = useState(false);
-  console.log(username, role);
+  // console.log(username, role);
 
   const handleMouseEnter = () => {
     setShowDropDown(true);

@@ -1,10 +1,10 @@
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Header from "./components/Header";
-import Index from "./Auth/Registration.jsx";
 import Login from "./Auth/Login.jsx";
 import Registration from "./Auth/Registration.jsx";
 import Logout from "./Auth/logout.jsx";
+import BasicDetails from "./components/BasicDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,14 +27,6 @@ const router = createBrowserRouter([
     path: "/header",
     element: <Header />,
   },
-  // { path: "/", element: <Header /> },
-  // {
-  //   path: "/auth,",
-  //   children: [
-  //     { path: "login", element: <Login /> },
-  //     { path: "registration", element: <Registration /> },
-  //   ],
-  // },
 ]);
 
 function App() {
