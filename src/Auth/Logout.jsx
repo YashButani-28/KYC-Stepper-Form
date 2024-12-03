@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { persistor } from "../redux/store";
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -7,6 +8,7 @@ export default function Logout() {
   useEffect(() => {
     // Remove the auth token from localStorage
     localStorage.removeItem("authToken");
+    persistor.purge();
 
     // Redirect to the login page
     navigate("/login");

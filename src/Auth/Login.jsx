@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../FormComponents/Input";
-import SelectInput from "../FormComponents/SelectInput";
+import Input from "./AuthComponents/Input";
+import SelectInput from "./AuthComponents/SelectInput";
 import AuthPageImage from "./AuthPageImage";
 import { Link, useNavigate } from "react-router-dom";
-import AuthButtons from "../FormComponents/AuthButtons";
+import AuthButtons from "./AuthComponents/AuthButtons";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
 import axios from "axios";
 
@@ -49,7 +49,7 @@ export default function Login() {
           const token = `token-${new Date().getTime()}`;
           localStorage.setItem("authToken", token);
 
-          navigate("/header", {
+          navigate("/layout", {
             state: { username: user.name, role: user.role, usersId: user.id },
           });
         } else {

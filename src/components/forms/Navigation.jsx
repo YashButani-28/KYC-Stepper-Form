@@ -1,12 +1,12 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function Navigation() {
   return (
     <>
       <div className="Nav-bar bg-secondery w-full h-[40px]">
-        <ul className="flex gap-4 text-[12px]  px-6 h-full items-center">
+        <ul className="flex gap-4 text-[14px]  px-6 h-full items-center">
           <NavLink
-            to="/basic-details"
+            to="basic-details"
             className={({ isActive }) =>
               isActive
                 ? "border-b-2 border-primary flex items-center h-full"
@@ -15,8 +15,9 @@ export default function Navigation() {
           >
             <li className="">Basic Details</li>
           </NavLink>
+
           <NavLink
-            to="/terms-details"
+            to="terms-datails"
             className={({ isActive }) =>
               isActive
                 ? "border-b-2 border-primary flex items-center h-full"
@@ -26,7 +27,7 @@ export default function Navigation() {
             <li className="">Terms Details</li>
           </NavLink>
           <NavLink
-            to="/user-details"
+            to="user-details"
             className={({ isActive }) =>
               isActive
                 ? "border-b-2 border-primary flex items-center h-full"
@@ -36,7 +37,7 @@ export default function Navigation() {
             <li className="">User Details</li>
           </NavLink>
           <NavLink
-            to="/address-details"
+            to="address-details"
             className={({ isActive }) =>
               isActive
                 ? "border-b-2 border-primary flex items-center h-full"
@@ -46,9 +47,6 @@ export default function Navigation() {
             <li className="">Address Details</li>
           </NavLink>
         </ul>
-      </div>
-      <div>
-        <Outlet />
       </div>
     </>
   );

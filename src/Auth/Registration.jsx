@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import AuthPageImage from "./AuthPageImage";
-import Input from "../FormComponents/Input";
-import SelectInput from "../FormComponents/SelectInput";
-import AuthButtons from "../FormComponents/AuthButtons";
+import Input from "./AuthComponents/Input";
+import SelectInput from "./AuthComponents/SelectInput";
+import AuthButtons from "./AuthComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../redux/slices/auth";
 
 export default function Registration() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState(""); // To handle server errors
@@ -19,7 +22,6 @@ export default function Registration() {
     handleSubmit,
     setValue,
     clearErrors,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -27,16 +29,32 @@ export default function Registration() {
     },
   });
 
-  // Watch field values
-  const selectedRole = watch("role");
+  // Access registrationData from the Redux store
 
-  // Generate Unique ID
+  // Check if a user with the same email and role exists in the state
+  // const doesUserExist = (email, role) => {
+  //   return doesUserExistWithEmailAndRole(
+  //     { auth: { registrationData } },
+  //     email,
+  //     role
+  //   );
+  // };
+
+  const registrationData = useSelector((state) => state.auth.registrationData);
+  useEffect(() => {
+    console.log("Updated registrationData:", registrationData);
+    if (registrationData.length >= 0) {
+      console.log("Registration data has users.");
+    } else {
+      console.log("No registration data found.");
+    }
+  }, [registrationData]);
+
+  // Generate Unique ID && check not exists
   const generateUniqueId = async () => {
     let uniqueId;
     try {
       const response = await axios.get("http://localhost:3000/users");
-      // if (!response.ok) throw new Error("Failed to fetch users.");
-
       const existingUsers = response.data;
       do {
         uniqueId = Math.floor(Math.random() * 1000000);
@@ -50,27 +68,23 @@ export default function Registration() {
   // On form submission
   const onSubmit = async (data) => {
     setServerError(""); // Reset server error
+
+    // Check if the user already exists with the given email and role in the registrationData state
+    // if (doesUserExist(data.email, data.role)) {
+    //   setServerError("An account with this email and role already exists.");
+    //   return;
+    // }
+
     try {
-      const response = await axios.get("http://localhost:3000/users");
-      // if (!response.ok) throw new Error("Failed to fetch users.");
-      const existingUsers = response.data;
-
-      const existingUserWithEmail = existingUsers.find(
-        (user) => user.email === data.email
-      );
-
-      if (existingUserWithEmail && existingUserWithEmail.role === data.role) {
-        setServerError("An account with this email and role already exists.");
-        return;
-      }
-
       const newUserId = await generateUniqueId();
       const userData = {
-        ...data,
         id: newUserId, // Assign unique ID
+        ...data,
       };
-
-      await axios.post("http://localhost:3000/users", userData);
+      console.log("Before dispatch:", registrationData);
+      dispatch(registerUser(userData));
+      console.log("after dispatch:", registrationData);
+      console.log(userData);
 
       navigate("/login");
     } catch (error) {
@@ -114,7 +128,7 @@ export default function Registration() {
                 required: "Email is required",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Email should like this, john.xyz@example",
+                  message: "Email should look like this, john.xyz@example",
                 },
               })}
             />
@@ -140,7 +154,7 @@ export default function Registration() {
                 },
                 maxLength: {
                   value: 12,
-                  message: "Mobile number must be at most 12   digits",
+                  message: "Mobile number must be at most 12 digits",
                 },
               })}
             />

@@ -1,8 +1,6 @@
 {
   "users": [
     {
-      "username": "user1",
-      "password": "password123",
       "kycForms": {
         "form1": {
           "field1": "value1",
@@ -83,12 +81,244 @@
       "id": "f803"
     },
     {
-      "id": 889284,
+      "id": "889284",
       "role": "Admin",
       "name": "Yash Babariya",
       "email": "babariya@gmail.com",
       "contact_no": "82828128172",
       "password": "babariya@123"
+    },
+    {
+      "id": "934766",
+      "role": "Admin",
+      "name": "YashPatel",
+      "email": "YashPatel@gmail.com",
+      "contact_no": "1627837882",
+      "password": "yash@123"
+    },
+    {
+      "id": "294770",
+      "role": "Admin",
+      "name": "hiten",
+      "email": "hiten@gmail.com",
+      "contact_no": "7227272727",
+      "password": "uyuysdsd"
+    },
+    {
+      "id": 510625,
+      "role": "User",
+      "name": "kano",
+      "email": "kano@gmail.com",
+      "contact_no": "2212121212",
+      "password": "kano123"
+    },
+    {
+      "id": 891998,
+      "role": "Admin",
+      "name": "yash",
+      "email": "yashays@has.com",
+      "contact_no": "11111111111",
+      "password": "assasas"
+    },
+    {
+      "id": 628767,
+      "role": "Admin",
+      "name": "hbsha",
+      "email": "eee@eee.com",
+      "contact_no": "2222222222",
+      "password": "sdsdds"
+    },
+    {
+      "id": 14413,
+      "role": "Admin",
+      "name": "pavannn",
+      "email": "pavannn@gamic.om",
+      "contact_no": "23232323232",
+      "password": "asasasas"
+    },
+    {
+      "id": 129474,
+      "role": "Admin",
+      "name": "pavannn",
+      "email": "pavannn@saa.com",
+      "contact_no": "11111111111",
+      "password": "2121212"
+    },
+    {
+      "id": 335081,
+      "role": "Admin",
+      "name": "uyusysd",
+      "email": "hasjdh@hs.com",
+      "contact_no": "1212121212",
+      "password": "sdasdad"
+    },
+    {
+      "id": 820983,
+      "role": "User",
+      "name": "yasyy",
+      "email": "yag@gam.com",
+      "contact_no": "1212122122",
+      "password": "wwqqwq"
+    },
+    {
+      "id": 796117,
+      "role": "User",
+      "name": "Yash",
+      "email": "nsjdnja@jdj.cj",
+      "contact_no": "2812182121",
+      "password": "dhjdhd"
+    },
+    {
+      "id": 767953,
+      "role": "Admin",
+      "name": "sya",
+      "email": "nd@kkj.com",
+      "contact_no": "21726127126",
+      "password": "dasdasd"
+    },
+    {
+      "id": 236690,
+      "role": "Admin",
+      "name": "saas",
+      "email": "dsd@wds.com",
+      "contact_no": "2121212122",
+      "password": "ascscc"
+    },
+    {
+      "id": 227991,
+      "role": "User",
+      "name": "yash",
+      "email": "Yash@gmil.com",
+      "contact_no": "12222222222",
+      "password": "wqwqwqw"
+    },
+    {
+      "id": 631868,
+      "role": "Admin",
+      "name": "yash",
+      "email": "yash@www.com",
+      "contact_no": "11111111111",
+      "password": "qwqwqw"
+    },
+    {
+      "id": 652903,
+      "role": "Admin",
+      "name": "njadjasdjj",
+      "email": "nn@jd.com",
+      "contact_no": "12122121212",
+      "password": "ckjnkd"
+    },
+    {
+      "id": 875142,
+      "role": "Admin",
+      "name": "jajsjasjj",
+      "email": "ajsj@djass.ocm",
+      "contact_no": "121212121212",
+      "password": "ncbdasd"
+    },
+    {
+      "id": 855048,
+      "role": "Admin",
+      "name": "snjdjhdha",
+      "email": "cbshdb@djas.ocm",
+      "contact_no": "21828121212",
+      "password": "ncsbcc"
+    },
+    {
+      "id": 330859,
+      "role": "Admin",
+      "name": "adsa",
+      "email": "ndjsa@jqw.com",
+      "contact_no": "2903123123",
+      "password": "nbsdsd"
+    },
+    {
+      "id": 856003,
+      "role": "User",
+      "name": "dsd",
+      "email": "dehdy@udhbas.cokkj",
+      "contact_no": "388173123123",
+      "password": "nhbhddsf"
+    },
+    {
+      "id": 823157,
+      "role": "User",
+      "name": "nkjds",
+      "email": "ha@dhasd.cox",
+      "contact_no": "2212312332",
+      "password": "nkdfksdf "
+    },
+    {
+      "id": 252788,
+      "role": "Admin",
+      "name": "cnscdcjsdda",
+      "email": "jsada@jwdhsad.jisn",
+      "contact_no": "12123121222",
+      "password": "ndddssd"
+    },
+    {
+      "id": 816214,
+      "role": "Admin",
+      "name": "djad",
+      "email": "dhusahd@jdjsa.pmck",
+      "contact_no": "22212121212",
+      "password": "ciscsdcs"
+    },
+    {
+      "id": 225104,
+      "role": "User",
+      "name": "nchdsbch",
+      "email": "dhds@dhd.ocxmjc",
+      "contact_no": "212121212121",
+      "password": "chbchasa"
+    },
+    {
+      "id": 19518,
+      "role": "Admin",
+      "name": "yash",
+      "email": "yash@dhbh.com",
+      "contact_no": "212121212122",
+      "password": "nhbdhd"
+    },
+    {
+      "id": 631417,
+      "role": "Admin",
+      "name": "  isd",
+      "email": "jua@kdjsa.ocm",
+      "contact_no": "22121222121",
+      "password": "dsadasd"
+    },
+    {
+      "id": 577121,
+      "role": "Admin",
+      "name": "hdbahsd",
+      "email": "dhas@dnjas.ocm",
+      "contact_no": "2282718278",
+      "password": "ndsdasdd"
+    },
+    {
+      "id": 62879,
+      "role": "Admin",
+      "name": "nhadbjasdha",
+      "email": "sdhadb@dh.onc",
+      "contact_no": "28128828128",
+      "password": "sdadsas"
+    },
+    {
+      "id": 565276,
+      "role": "Admin",
+      "name": "dy@",
+      "email": "db@djas.ocm",
+      "contact_no": "221828182812",
+      "password": "njsida"
+    },
+    {
+      "id": 439488,
+      "role": "Admin",
+      "name": "dhsad",
+      "email": "ety@whdhud.snjc",
+      "contact_no": "22212121212",
+      "password": "chaadsad"
     }
   ],
   "currentUser": "user1"

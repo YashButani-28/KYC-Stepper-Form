@@ -2,7 +2,7 @@ import logo from "../assets/icons/logo.svg";
 import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
-import Navigation from "./Navigation";
+// import Navigation from "./Navigation";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
@@ -10,7 +10,9 @@ import { checkUserExistence } from "../utils/checkUserExistence"; // Import util
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { username, role } = location.state || {};
+
   const [showDropDown, setShowDropDown] = useState(false);
   // console.log(username, role);
 
@@ -54,7 +56,9 @@ export default function Header() {
         <div className="flex justify-between mb-4">
           <div className="logo-section flex gap-[16px]">
             <div className="main-logo ">
-              <img src={logo} alt="logo image" className="size-[36px]" />
+              <Link to="/layout">
+                <img src={logo} alt="logo image" className="size-[36px]" />
+              </Link>
             </div>
             <div className="border-[1px]"></div>
           </div>
@@ -113,7 +117,10 @@ export default function Header() {
           </div>
         </div>
       </header>
-      <Navigation />
+      {/* <Navigation /> */}
+      {/* <div>
+        <Outlet />
+      </div> */}
     </>
   );
 }

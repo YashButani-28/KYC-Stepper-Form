@@ -9,7 +9,7 @@ import { combineReducers } from "@reduxjs/toolkit"
 const authPersistConfig={
     key:"auth",
     storage,
-    whitelist:["isAuthentication","user"],    // Persist authentication state and user info
+    whitelist:["isAuthenticated","user","registrationData"],    // Persist authentication state and user info
 };
 
 const formPersistConfig={
