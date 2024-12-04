@@ -3,15 +3,15 @@ import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
 // import Navigation from "./Navigation";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const { username, role } = location.state || {};
+  const { username, role } = useSelector((state) => state.auth.user);
 
   const [showDropDown, setShowDropDown] = useState(false);
   // console.log(username, role);
@@ -97,7 +97,7 @@ export default function Header() {
                 className="rounded-full border-2 border-primary size-[40px] "
               />
               <div className="flex flex-col ">
-                <h1 className="text-[14px] font-medium ">{username || ""}</h1>
+                <h1 className="text-[14px] font-medium ">{username}</h1>
                 <h1 className="text-[12px] ">{role}</h1>
               </div>
             </div>

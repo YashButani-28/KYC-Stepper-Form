@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../utils/axios"
 
 const initialState = {
@@ -9,13 +9,26 @@ const initialState = {
   error: null, // give an error
 };
 
+export const fetchUsers=createAsyncThunk(
+  "auth/fetchUsers",
+  async(_,{rejectWithValue})=>{
+      try {
+          const response=await axios.get("http://localhost:3000/users")
+          
+          return await response.data;
+      } catch (error) {
+          return rejectWithValue(error.message);
+      }
+  }
+)
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
 
     startLoading(state) {
-      state.isLoading = true;
+      state.isLoading = true; 
       state.error = null;
     },
 
@@ -24,9 +37,12 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
+
   registerSuccess(state, action) {
-      state.registrationData.push(action.payload); 
+      // state.registrationData.push(action.payload); 
+      state.registrationData = [...state.registrationData, action.payload];
       console.log("New user added:", action.payload); // Log the newly added user
+
       // console.log("Updated registrationData:", registrationData); 
       state.isLoading = false;
     },
@@ -47,6 +63,22 @@ const authSlice = createSlice({
       state.error = null;
     },
   },
+  extraReducers:(builder)=>{
+    builder
+    .addCase(fetchUsers.pending,(state)=>{
+        state.isLoading=true;
+        state.error=null;
+    })
+    .addCase(fetchUsers.fulfilled,(state,action)=>{
+        state.isLoading=false,
+        state.registrationData=action.payload
+    })
+    .addCase(fetchUsers.rejected,(state,action)=>{
+        state.isLoading=false,
+        state.error=action.payload
+    })
+  }
+  
 });
 
 // Reducer
@@ -64,40 +96,34 @@ export const {
 
 
 
-// export const doesUserExistWithEmailAndRole = (state, email, role) => {
-//   const registrationData = state.auth.registrationData;
-//   return registrationData && registrationData.email === email && registrationData.role === role;
-// };
-
-
-// export const registerUser = (userData) => async (dispatch,getState) => {
-//   dispatch(startLoading());
-//   try {
-//     const response = await axios.post("http://localhost:3000/users", userData);
-//     dispatch(registerSuccess(response.data));
-//     console.log("goes to json");
-    
-//   } catch (error) {
-//     dispatch(hasError("Failed to register user. Please try again."));
-//   }
-// };
-
-export const registerUser=(userData)=>async(dispatch,getState)=>{
-  dispatch(startLoading());
+ export const fetchData=()=>async(dispatch)=>{
+  // dispatch(startLoading());
   try {
-    console.log("authSice",userData);
+    // console.log("authSice",userData);
     
-    const response=await axios.post("/users",userData);
-  
+    const response=await axios.get("/users");
     dispatch(registerSuccess(response.data));
-    console.log("User successfully registered:", response.data);
+  
+    // dispatch(registerSuccess(response.data));
+    // console.log("User successfully registered:", response.data);
 
-    const currentState=getState();
-    console.log("currentRegiserData:", currentState);
+    // const currentState=getState();
+    // console.log("currentRegiserData:", currentState);
 
   } catch (error) {
     dispatch(hasError("Failed to register user. Please try again!"))
-    console.log("Registration error:", error);
+    // console.log("Registration error:", error);
+  }
+
+}
+
+export const sendUserData=(data)=>async(dispatch)=>{
+  try {
+    
+    dispatch(login(data))
+
+  } catch (error) {
+    dispatch(hasError("Failed to receive user data. Please try again!"))
   }
 
 }

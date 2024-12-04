@@ -7,14 +7,15 @@ import AuthButtons from "./AuthComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/slices/auth";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../redux/slices/auth";
 
 export default function Registration() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState(""); // To handle server errors
+  const [users, setUsers] = useState([]);
 
   // React Hook Form setup
   const {
@@ -29,66 +30,47 @@ export default function Registration() {
     },
   });
 
-  // Access registrationData from the Redux store
-
-  // Check if a user with the same email and role exists in the state
-  // const doesUserExist = (email, role) => {
-  //   return doesUserExistWithEmailAndRole(
-  //     { auth: { registrationData } },
-  //     email,
-  //     role
-  //   );
-  // };
-
-  const registrationData = useSelector((state) => state.auth.registrationData);
+  // data fetch from server and store to redux store
   useEffect(() => {
-    console.log("Updated registrationData:", registrationData);
-    if (registrationData.length >= 0) {
-      console.log("Registration data has users.");
-    } else {
-      console.log("No registration data found.");
-    }
-  }, [registrationData]);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-  // Generate Unique ID && check not exists
-  const generateUniqueId = async () => {
-    let uniqueId;
-    try {
-      const response = await axios.get("http://localhost:3000/users");
-      const existingUsers = response.data;
-      do {
-        uniqueId = Math.floor(Math.random() * 1000000);
-      } while (existingUsers.some((user) => user.id === uniqueId));
-    } catch (error) {
-      console.error("Error generating unique ID:", error);
-    }
-    return uniqueId;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/users");
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setServerError("Failed to load user data. Please try again.");
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const userExists = (email, role) => {
+    return users.some((user) => user.email === email && user.role === role);
   };
-
   // On form submission
   const onSubmit = async (data) => {
     setServerError(""); // Reset server error
-
-    // Check if the user already exists with the given email and role in the registrationData state
-    // if (doesUserExist(data.email, data.role)) {
-    //   setServerError("An account with this email and role already exists.");
-    //   return;
-    // }
-
+    // console.log(data);
     try {
-      const newUserId = await generateUniqueId();
-      const userData = {
-        id: newUserId, // Assign unique ID
-        ...data,
-      };
-      console.log("Before dispatch:", registrationData);
-      dispatch(registerUser(userData));
-      console.log("after dispatch:", registrationData);
-      console.log(userData);
+      if (userExists(data.email, data.role)) {
+        setServerError("A user with the same email and role already exists.");
+        return;
+      }
 
+      // Generate the next ID for the new user
+      // const nextId = users.length > 0 ? users.map((user) => user.id) + 1 : 1;
+      const nextId = users.length > 0 ? users[users.length - 1].id + 1 : 1;
+
+      // Post the new user data to the server
+      const newUserData = { ...data, id: nextId };
+      await axios.post("http://localhost:3000/users", newUserData);
       navigate("/login");
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
       setServerError("Failed to register user. Please try again.");
     }
   };
