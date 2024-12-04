@@ -1,6 +1,5 @@
-import { createSlice, current } from "@reduxjs/toolkit";
-import reducer from "./auth";
-import { act } from "react";
+import { createSlice } from "@reduxjs/toolkit";
+
 
 
 const initialState={
