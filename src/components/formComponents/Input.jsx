@@ -28,7 +28,6 @@ function Input(
         ref={ref}
         onChange={onChange}
         className={`w-full px-[12px] py-[8px] border border-[#69677480] placeholder-[#696774] rounded-[6px]  focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
-        // style={{ "margin-top": "8px" }}
         {...props}
       />
     </div>

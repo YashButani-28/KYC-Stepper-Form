@@ -1,6 +1,5 @@
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import Header from "./components/Header";
 import Login from "./Auth/Login.jsx";
 import Registration from "./Auth/Registration.jsx";
 import Logout from "./Auth/logout.jsx";

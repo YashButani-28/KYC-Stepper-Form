@@ -1,15 +1,39 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import ButtonGroup from "./ButtonGroup";
 export default function BasicDetails() {
-  const [category, setCategory] = useState("");
-  const [businessType, setBusinessType] = useState("");
-  const [country, setCountry] = useState("");
-  const [salesPerson, setSalesPerson] = useState("");
-  const [assistantSalesPerson, setAssistantSalesPerson] = useState("");
-  const [department, setDepartment] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      category: "",
+      businessType: "",
+      company: "",
+      gstNo: "",
+      primaryContact: "",
+      primaryEmail: "",
+      secondaryEmail: "",
+      dob: "",
+      country: "",
+      countryCode: "",
+      mobileNo: "",
+      salesPerson: "",
+      assistantSalesPerson: "",
+      department: "",
+    },
+  });
+
+  const watchCategory = watch("category");
+  const watchSalesPerson = watch("salesPerson");
+  const watchCountry = watch("country");
 
   const businessTypeOptions = {
     Proprietor: [
@@ -27,14 +51,14 @@ export default function BasicDetails() {
       "Agriculture",
     ],
     LLP: ["Service Sector", "Trading", "Manufacturing", "E-commerce"],
-    Private_Limited: [
+    PrivateLimited: [
       "Service Sector",
       "Trading",
       "Manufacturing",
       "E-commerce",
       "Agriculture",
     ],
-    Public_Limited: [
+    PublicLimited: [
       "Service Sector",
       "Trading",
       "Manufacturing",
@@ -84,8 +108,17 @@ export default function BasicDetails() {
     ],
   };
 
+  const onSubmit = (data) => {
+    console.log("Submitted Data:", data);
+    if (onSubmit) {
+      console.log("submitted");
+    } else {
+      console.log("not submitted");
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <div className="flex w-full gap-2 flex-wrap">
         <div className="flex flex-col gap-4 w-[15%]">
           <DetailTitle
@@ -95,70 +128,73 @@ export default function BasicDetails() {
           />
         </div>
         <div className="flex w-[80%] justify-between gap-[40px]">
-          <SelectInput
-            label="Category"
-            placeholder="Select Category"
-            important
-            options={[
-              // { value: "", label: "Select Category" },
-              { value: "Proprietor", label: "Proprietor" },
-              { value: "Partnership", label: "Partnership" },
-              { value: "LLP", label: "LLP" },
-              { value: "Private Limited", label: "Private Limited" },
-              { value: "Public Limited", label: "Public Limited" },
-              { value: "Others", label: "Others" },
-            ]}
-            value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setBusinessType(""); // Reset Business Type when Category changes
-            }}
-            // {...register("role", { required: "Role is required" })}
-            // onChange={(e) => {
-            //   setValue("role", e.target.value); // Update the value in React Hook Form
-            //   clearErrors("role"); // Clear error when value changes
-            // }}
-          />
-
-          <Input
-            label="Company/Individual"
-            name="category"
-            important
-            placeholder="Enter Name"
-          />
-          {/* <SelectInput
-            label="Business Type"
-            options={[
-              { value: "", label: "Select Business Type" },
-              { value: "Service Sector", label: "Service Sector" },
-              { value: "Trading", label: "Trading" },
-              { value: "Manufacturing", label: "Manufacturing" },
-              { value: "E-commerce", label: "E-commerce" },
-              { value: "Agriculture", label: "Agriculture" },
-              { value: "Others", label: "Others" },
-            ]}
-            // {...register("role", { required: "Role is required" })}
-            // onChange={(e) => {
-            //   setValue("role", e.target.value); // Update the value in React Hook Form
-            //   clearErrors("role"); // Clear error when value changes
-            // }}
-            
-          /> */}
+          <div className="flex flex-col w-full">
+            <SelectInput
+              label="Category"
+              placeholder="Select Category"
+              important
+              {...register("category", { required: "Category is required" })}
+              options={[
+                // { value: "", label: "Select Category" },
+                { value: "Proprietor", label: "Proprietor" },
+                { value: "Partnership", label: "Partnership" },
+                { value: "LLP", label: "LLP" },
+                { value: "PrivateLimited", label: "Private Limited" },
+                { value: "PublicLimited", label: "Public Limited" },
+                { value: "Others", label: "Others" },
+              ]}
+              onChange={(e) => {
+                const selectedCategory = e.target.value;
+                setValue("category", selectedCategory); // Update category value
+                setValue("businessType", "");
+                clearErrors("category"); // Reset Business Type when category changes
+              }}
+            />
+            {errors.category && (
+              <p className="text-red-500 text-sm ml-[10px] mt-1">
+                {errors.category.message}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col w-full">
+            <Input
+              label="Company/Individual"
+              {...register("company", { required: "Company Name is required" })}
+              name="company"
+              important
+              placeholder="Enter Name"
+            />
+            {errors.company && (
+              <p className="text-red-500 text-sm ml-[10px] mt-1">
+                {errors.company.message}
+              </p>
+            )}
+          </div>
 
           <SelectInput
             label="Business Type"
             placeholder="Select Business Type"
-            options={[
-              // { value: "", label: "Select Business Type" },
-              ...(businessTypeOptions[category] || []).map((type) => ({
-                value: type,
-                label: type,
-              })),
-            ]}
-            value={businessType}
-            onChange={(e) => setBusinessType(e.target.value)}
+            {...register("businessType")}
+            options={
+              watchCategory
+                ? businessTypeOptions[watchCategory]?.map((type) => ({
+                    value: type,
+                    label: type,
+                  }))
+                : []
+            }
+            onChange={(e) => {
+              setValue("businessType", e.target.value);
+            }}
+
+            // disabled={!watchCategory}
           />
-          <Input label="GST No" name="gstNo" placeholder="Enter GST No" />
+          <Input
+            {...register("gstNo")}
+            label="GST No"
+            name="gstNo"
+            placeholder="Enter GST No"
+          />
         </div>
       </div>
       <div className="w-[99%] h-[2px]  bg-[#D9D9D9]"></div>
@@ -171,12 +207,14 @@ export default function BasicDetails() {
           <div className="flex w-full justify-between gap-[40px]">
             <Input
               label="Primary Contact"
+              {...register("primaryContact")}
               name="primaryContact"
               type="tel"
               placeholder="Type Primary Contact"
             />
             <Input
               label="Primary Email"
+              {...register("primaryEmail")}
               type="email"
               name="primaryEmail"
               important
@@ -184,48 +222,58 @@ export default function BasicDetails() {
             />
             <Input
               label="Secondary Email"
+              {...register("secondaryEmail")}
               type="email"
               name="secondaryEmail"
               placeholder="Enter Secondary Email"
             />
             <Input
               label="Birth Date"
+              {...register("dob")}
               type="date"
               name="dob"
               placeholder="Select Date"
             />
           </div>
           <div className="flex w-full justify-between gap-[40px]">
-            <SelectInput
-              placeholder="Select Country"
-              label="Country"
-              important
-              options={[
-                // { value: "", label: "Select Country" },
-                { value: "Australia", label: "Australia" },
-                { value: "Brazil", label: "Brazil" },
-                { value: "India", label: "India" },
-                { value: "Canada", label: "Canada" },
-                { value: "United States", label: "United States" },
-                { value: "China", label: "China" },
-                { value: "Italy", label: "Italy" },
-                { value: "Japan", label: "Japan" },
-                { value: "Pakistan", label: "Pakistan" },
-                { value: "Russia", label: "Russia" },
-                { value: "South Africa", label: "South Africa" },
-                { value: "United Kingdom", label: "United Kingdom" },
-              ]}
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              // {...register("role", { required: "Role is required" })}
-              // onChange={(e) => {
-              //   setValue("role", e.target.value); // Update the value in React Hook Form
-              //   clearErrors("role"); // Clear error when value changes
-              // }}
-            />
+            <div className="flex flex-col w-full">
+              <SelectInput
+                placeholder="Select Country"
+                label="Country"
+                {...register("country", { required: "Country is required" })}
+                important
+                options={[
+                  // { value: "", label: "Select Country" },
+                  { value: "Australia", label: "Australia" },
+                  { value: "Brazil", label: "Brazil" },
+                  { value: "India", label: "India" },
+                  { value: "Canada", label: "Canada" },
+                  { value: "United States", label: "United States" },
+                  { value: "China", label: "China" },
+                  { value: "Italy", label: "Italy" },
+                  { value: "Japan", label: "Japan" },
+                  { value: "Pakistan", label: "Pakistan" },
+                  { value: "Russia", label: "Russia" },
+                  { value: "South Africa", label: "South Africa" },
+                  { value: "United Kingdom", label: "United Kingdom" },
+                ]}
+                onChange={(e) => {
+                  const selectedCountry = e.target.value;
+                  setValue("country", selectedCountry);
+                  setValue("countryCode", mobileCodes[selectedCountry] || "");
+                  clearErrors("country");
+                }}
+              />
+              {errors.country && (
+                <p className="text-red-500 text-sm ml-[10px] mt-1">
+                  {errors.country.message}
+                </p>
+              )}
+            </div>
             <div className="relative w-full">
               <Input
                 label="Mobile No."
+                {...register("mobileNo")}
                 name="mobileNo"
                 type="tel"
                 className="pl-[95px]"
@@ -233,17 +281,20 @@ export default function BasicDetails() {
               />
               <div className="absolute w-22 top-[29px] left-1">
                 <SelectInput
-                  // placeholder="Code"
+                  placeholder="Code"
+                  {...register("countryCode")}
                   className="border-none"
-                  options={[
-                    { value: "", label: "Code" },
-                    {
-                      value: mobileCodes[country] || "",
-                      label: mobileCodes[country] || "",
-                    },
-                  ]}
-                  value={mobileCodes[country] || ""}
-                  readOnly
+                  options={
+                    watchCountry
+                      ? [
+                          {
+                            value: mobileCodes[watchCountry],
+                            label: mobileCodes[watchCountry],
+                          },
+                        ]
+                      : []
+                  }
+                  disabled={!watchCountry}
                 />
               </div>
             </div>
@@ -297,10 +348,11 @@ export default function BasicDetails() {
         <div className="flex flex-col gap-4 w-[80%]">
           <div className="flex w-full justify-between gap-[20px]">
             <SelectInput
-              placeholder="Select Employee"
               label="Sales Person/Employee"
+              {...register("salesPerson")}
+              placeholder="Select Employee"
               options={[
-                { value: "", label: "Select Employee" },
+                // { value: "", label: "Select Employee" },
                 { value: "Sales Executive", label: "Sales Executive" },
                 {
                   value: "Sales Representative",
@@ -314,28 +366,26 @@ export default function BasicDetails() {
                 },
               ]}
               onChange={(e) => {
-                setSalesPerson(e.target.value);
-                setAssistantSalesPerson(""); // Reset Assistant Sales Person when Sales Person changes
-                setDepartment(""); // Reset Department when Sales Person changes
+                setValue("salesPerson", e.target.value);
+                setValue("assistantSalesPerson", "");
+                setValue("department", "");
               }}
-              // {...register("role", { required: "Role is required" })}
-              // onChange={(e) => {
-              //   setValue("role", e.target.value); // Update the value in React Hook Form
-              //   clearErrors("role"); // Clear error when value changes
-              // }}
             />
             <SelectInput
               label="Assistant Sales Person"
+              {...register("assistantSalesPerson")}
               placeholder="Select Assistant Sales Person"
-              options={[
-                // { value: "", label: "Select Assistant Sales Person" },
-                ...(assistantSalesOptions[salesPerson] || []).map((option) => ({
-                  value: option,
-                  label: option,
-                })),
-              ]}
-              value={assistantSalesPerson}
-              onChange={(e) => setAssistantSalesPerson(e.target.value)}
+              options={
+                watchSalesPerson
+                  ? assistantSalesOptions[watchSalesPerson].map((option) => ({
+                      value: option,
+                      label: option,
+                    }))
+                  : []
+              }
+              onChange={(e) => {
+                setValue("assistantSalesPerson", e.target.value);
+              }}
             />
             <div className="w-full">
               <label
@@ -346,12 +396,14 @@ export default function BasicDetails() {
               </label>
               <textarea
                 name="remark"
+                {...register("remark")}
                 className="w-full px-[12px] py-[8px] border border-[#69677480] placeholder-[#696774] rounded-[6px] h-[42px] mt-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter Remarks"
               ></textarea>
             </div>
             <Input
               label="Registration Date"
+              {...register("regDate")}
               type="date"
               name="regDate"
               placeholder="Select Date"
@@ -360,16 +412,19 @@ export default function BasicDetails() {
           <div className="flex flex-col justify-between gap-[20px] w-1/2">
             <SelectInput
               label="Department"
+              {...register("department")}
               placeholder="Select Department"
-              options={[
-                { value: "", label: "Select Department" },
-                ...(departmentOptions[salesPerson] || []).map((option) => ({
-                  value: option,
-                  label: option,
-                })),
-              ]}
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
+              options={
+                watchSalesPerson
+                  ? departmentOptions[watchSalesPerson].map((option) => ({
+                      value: option,
+                      label: option,
+                    }))
+                  : []
+              }
+              onChange={(e) => {
+                setValue("department", e.target.value);
+              }}
             />
             <div className="flex gap-[10px] w-full">
               <input type="checkbox" className="" />
@@ -384,8 +439,8 @@ export default function BasicDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup />
+        <ButtonGroup resetForm={reset} />
       </div>
-    </div>
+    </form>
   );
 }

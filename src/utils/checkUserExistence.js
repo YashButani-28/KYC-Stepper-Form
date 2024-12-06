@@ -1,4 +1,3 @@
-// src/utils/checkUserExistence.js
 export async function checkUserExistence(username) {
   try {
     const response = await fetch("http://localhost:3000/users");

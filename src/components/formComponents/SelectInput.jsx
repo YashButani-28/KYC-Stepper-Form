@@ -18,7 +18,7 @@ const SelectInput = (
         ref={ref}
         className={`w-full px-[12px] py-[8px] p-2 rounded-[6px] border border-[#69677480] ${className}`}
       >
-        <option value="Selected" className="bg-gray-400" selected>
+        <option value="" className="bg-gray-400">
           {placeholder || ""}
         </option>
         {options?.map((option, index) => (

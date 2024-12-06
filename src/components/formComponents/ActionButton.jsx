@@ -1,5 +1,6 @@
 export default function ActionButton({
   children,
+  type = "submit",
   className = "",
   variant = "default",
   ...props
@@ -12,6 +13,7 @@ export default function ActionButton({
   };
   return (
     <button
+      type={type}
       className={`${
         colorClasses[variant] || colorClasses.default
       } ${className} rounded-[10px] text-center text-[14px] py-[10px] px-[18px] h-[38px] w-[124px] transition duration-300 ease-in-out`}

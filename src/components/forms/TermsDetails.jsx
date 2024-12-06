@@ -1,52 +1,69 @@
-import { useState } from "react";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import ButtonGroup from "./ButtonGroup";
+import { useForm } from "react-hook-form";
 export default function TermsDetails() {
-  const [aadatParty, setAadatParty] = useState("");
-  const [brokerOptions, setBrokerOptions] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      currency: "",
+      dayTerm: "",
+      termName: "",
+      ExtPercent: "",
+      ExtraPercent: "",
+      creaditLimit: "",
+      memoLimit: "",
+      aadatParty: "",
+      commAadat: "",
+      broker1: "",
+      commBroker1: "",
+    },
+  });
+
+  const watchAadatParty = watch("aadatParty");
 
   const brokerDependencies = {
     Buyer: [
-      { value: "Real Estate Broker", label: "Real Estate Broker" },
-      { value: "Stock Broker", label: "Stock Broker" },
-      { value: "Insurance Broker", label: "Insurance Broker" },
-      { value: "Trade Broker", label: "Trade Broker" },
-      { value: "Freight Broker", label: "Freight Broker" },
+      "Real Estate Broker",
+      "Stock Broker",
+      "Insurance Broker",
+      "Trade Broker",
+      "Freight Broker",
     ],
     Seller: [
-      { value: "Real Estate Broker", label: "Real Estate Broker" },
-      { value: "Stock Broker", label: "Stock Broker" },
-      { value: "Trade Broker", label: "Trade Broker" },
-      { value: "Freight Broker", label: "Freight Broker" },
-      { value: "Insurance Broker", label: "Insurance Broker" },
+      "Real Estate Broker",
+      "Stock Broker",
+      "Trade Broker",
+      "Freight Broker",
     ],
-    Distributor: [
-      { value: "Insurance Broker", label: "Insurance Broker" },
-      { value: "Freight Broker", label: "Freight Broker" },
-      { value: "Trade Broker", label: "Trade Broker" },
-    ],
-    Vendor: [
-      { value: "Trade Broker", label: "Trade Broker" },
-      { value: "Real Estate Broker", label: "Real Estate Broker" },
-      { value: "Stock Broker", label: "Stock Broker" },
-    ],
+    Distributor: ["Insurance Broker", "Freight Broker", "Trade Broker"],
+    Vendor: ["Trade Broker", "Real Estate Broker", "Stock Broker"],
     Customer: [
-      { value: "Stock Broker", label: "Stock Broker" },
-      { value: "Insurance Broker", label: "Insurance Broker" },
-      { value: "Real Estate Broker", label: "Real Estate Broker" },
-      { value: "Freight Broker", label: "Freight Broker" },
+      "Stock Broker",
+      "Insurance Broker",
+      "Real Estate Broker",
+      "Freight Broker",
     ],
   };
 
-  const handleAadatPartyChange = (value) => {
-    setAadatParty(value);
-    setBrokerOptions(brokerDependencies[value] || []);
+  const onSubmit = (data) => {
+    console.log("Submitted Data:", data);
+    if (onSubmit) {
+      console.log("submitted");
+    } else {
+      console.log("not submitted");
+    }
   };
-
   return (
-    <div className="flex flex-col gap-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
       <div className="flex w-full gap-2 ">
         <div className="flex flex-col gap-116 w-[15%]">
           <DetailTitle
@@ -58,52 +75,70 @@ export default function TermsDetails() {
         <div className="flex flex-col w-[80%] gap-4">
           <div className="flex w-full justify-between gap-[40px]">
             <div className="w-1/2 flex gap-12 ">
-              <SelectInput
-                label="Currnecy (%)"
-                placeholder="Select Currency"
-                important
-                options={[
-                  // { value: "", label: "Select Currency" },
-                  { value: "AUD", label: "AUD" },
-                  { value: "BRL", label: "BRL" },
-                  { value: "CAD", label: "CAD" },
-                  { value: "USD", label: "USD" },
-                  { value: "CNY", label: "CNY" },
-                  { value: "EUR", label: "EUR" },
-                  { value: "JPY", label: "JPY" },
-                  { value: "PKR", label: "PKR" },
-                  { value: "RUB", label: "RUB" },
-                  { value: "ZAR", label: "ZAR" },
-                  { value: "GBP", label: "GBP" },
-                ]}
-                // {...register("role", { required: "Role is required" })}
-                // onChange={(e) => {
-                //   setValue("role", e.target.value); // Update the value in React Hook Form
-                //   clearErrors("role"); // Clear error when value changes
-                // }}
-              />
-              <SelectInput
-                label="Day Terms (O)"
-                placeholder="Select Day Terms"
-                important
-                options={[
-                  // { value: "", label: "Select Day Terms" },
-                  { value: "Net 30", label: "Net 30" },
-                  { value: "Net 60", label: "Net 60" },
-                  { value: "Cash on Delivery", label: "Cash on Delivery" },
-                  { value: "Prepaid", label: "Prepaid" },
-                  { value: "Due on Receipt", label: "Due on Receipt" },
-                ]}
-                // {...register("role", { required: "Role is required" })}
-                // onChange={(e) => {
-                //   setValue("role", e.target.value); // Update the value in React Hook Form
-                //   clearErrors("role"); // Clear error when value changes
-                // }}
-              />
+              <div className="flex flex-col w-full">
+                <SelectInput
+                  label="Currnecy (%)"
+                  placeholder="Select Currency"
+                  {...register("currency", {
+                    required: "Currency is required",
+                  })}
+                  important
+                  options={[
+                    // { value: "", label: "Select Currency" },
+                    { value: "AUD", label: "AUD" },
+                    { value: "BRL", label: "BRL" },
+                    { value: "CAD", label: "CAD" },
+                    { value: "USD", label: "USD" },
+                    { value: "CNY", label: "CNY" },
+                    { value: "EUR", label: "EUR" },
+                    { value: "JPY", label: "JPY" },
+                    { value: "PKR", label: "PKR" },
+                    { value: "RUB", label: "RUB" },
+                    { value: "ZAR", label: "ZAR" },
+                    { value: "GBP", label: "GBP" },
+                  ]}
+                  onChange={(e) => {
+                    setValue("currency", e.target.value);
+                    clearErrors("currency");
+                  }}
+                />
+                {errors.currency && (
+                  <p className="text-red-500 text-sm ml-[10px] mt-1">
+                    {errors.currency.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col w-full">
+                <SelectInput
+                  label="Day Terms (O)"
+                  placeholder="Select Day Terms"
+                  {...register("dayTerm", {
+                    required: "Day Terms is required",
+                  })}
+                  important
+                  options={[
+                    { value: "Net 30", label: "Net 30" },
+                    { value: "Net 60", label: "Net 60" },
+                    { value: "Cash on Delivery", label: "Cash on Delivery" },
+                    { value: "Prepaid", label: "Prepaid" },
+                    { value: "Due on Receipt", label: "Due on Receipt" },
+                  ]}
+                  onChange={(e) => {
+                    setValue("dayTerm", e.target.value);
+                    clearErrors("dayTerm");
+                  }}
+                />
+                {errors.dayTerm && (
+                  <p className="text-red-500 text-sm ml-[10px] mt-1">
+                    {errors.dayTerm.message}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="w-1/2">
               <Input
                 label="Term Name"
+                {...register("termName")}
                 type="text"
                 name="termName"
                 placeholder="Enter Term Name"
@@ -115,13 +150,15 @@ export default function TermsDetails() {
               <div className="w-1/2 flex gap-4">
                 <Input
                   label="Ext %"
-                  name="ext"
+                  {...register("ExtPercent")}
+                  name="ExtPercent"
                   type="number"
                   placeholder="Enter Ext %"
                 />
                 <Input
                   label="Rap %"
-                  name="rap"
+                  {...register("RapPercent")}
+                  name="RapPercent"
                   type="number"
                   placeholder="Enter Rap %"
                 />
@@ -129,13 +166,15 @@ export default function TermsDetails() {
               <div className="w-1/2 flex gap-4">
                 <Input
                   label="Extra %"
+                  {...register("ExtraPercent")}
                   type="number"
-                  name="extra"
+                  name="ExtraPercent"
                   placeholder="0.00"
                 />
                 <Input
                   label="Credit Limit"
-                  name="creditLimit"
+                  {...register("creaditLimit")}
+                  name="creaditLimit"
                   type="number"
                   placeholder="Enter Limit "
                 />
@@ -145,6 +184,7 @@ export default function TermsDetails() {
               <div className="w-1/4">
                 <Input
                   label="Memo Limit"
+                  {...register("memoLimit")}
                   name="memoLimit"
                   type="number"
                   placeholder="Enter Limit "
@@ -164,7 +204,6 @@ export default function TermsDetails() {
               </div>
             </div>
           </div>
-          {/* </div> */}
         </div>
       </div>
       <div className="w-[99%] h-[2px]  bg-[#D9D9D9]"></div>
@@ -178,28 +217,28 @@ export default function TermsDetails() {
               <div className="w-full flex gap-2">
                 <SelectInput
                   label="Aadat Party 1"
-                  placeholder="Select Aadat Party "
+                  placeholder="Select Aadat Party"
+                  {...register("aadatParty")}
                   className="w-full"
                   options={[
-                    // { value: "", label: "Select Aadat Party 1" },
                     { value: "Buyer", label: "Buyer" },
                     { value: "Seller", label: "Seller" },
                     { value: "Distributor", label: "Distributor" },
                     { value: "Vendor", label: "Vendor" },
                     { value: "Customer", label: "Customer" },
                   ]}
-                  onChange={(e) => handleAadatPartyChange(e.target.value)}
-                  // {...register("role", { required: "Role is required" })}
-                  // onChange={(e) => {
-                  //   setValue("role", e.target.value); // Update the value in React Hook Form
-                  //   clearErrors("role"); // Clear error when value changes
-                  // }}
+                  onChange={(e) => {
+                    const selectedAadatPary = e.target.value;
+                    setValue("aadatParty", selectedAadatPary);
+                    setValue("broker1", "");
+                  }}
                 />
               </div>
               <div className="w-20">
                 <Input
                   label="Comm"
-                  name="comm0"
+                  name="commAadat"
+                  {...register("commAadat")}
                   type="number"
                   placeholder="00"
                   className="w-full"
@@ -211,17 +250,26 @@ export default function TermsDetails() {
                 <SelectInput
                   label="Broker 1"
                   placeholder="Select Broker 1"
+                  {...register("broker1")}
                   className="w-full"
-                  options={[
-                    // { value: "", label: "Select Broker 1" },
-                    ...brokerOptions,
-                  ]}
+                  options={
+                    watchAadatParty
+                      ? brokerDependencies[watchAadatParty]?.map((type) => ({
+                          value: type,
+                          label: type,
+                        }))
+                      : []
+                  }
+                  onChange={(e) => {
+                    setValue("broker1", e.target.value);
+                  }}
                 />
               </div>
               <div className="w-20">
                 <Input
                   label="Comm"
-                  name="comm1"
+                  name="commBroker1"
+                  {...register("commBroker1")}
                   type="number"
                   placeholder="00"
                   className="w-full"
@@ -232,8 +280,8 @@ export default function TermsDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup />
+        <ButtonGroup resetForm={reset} />
       </div>
-    </div>
+    </form>
   );
 }

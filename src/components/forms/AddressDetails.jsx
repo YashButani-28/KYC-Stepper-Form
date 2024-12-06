@@ -1,157 +1,35 @@
-// import DetailTitle from "../DetailTitle";
-// import Input from "../formComponents/Input";
-// import SelectInput from "../formComponents/SelectInput";
-// import ButtonGroup from "./ButtonGroup";
-// import { useState } from "react-router-dom";
-
-// export default function AddressDetails() {
-// const [selectedCountry, setSelectedCountry] = useState("");
-// const [selectedState, setSelectedState] = useState("");
-// const [selectedCity, setSelectedCity] = useState("");
-//   return (
-//     <div className="flex flex-col gap-4">
-//       <div className="flex w-full gap-2 ">
-//         <div className="flex flex-col gap-4 w-[15%]">
-//           <DetailTitle title="Address Details" />
-//         </div>
-//         <div className="flex flex-col w-[80%] gap-4">
-//           <div className="flex w-full justify-between gap-[40px]">
-//             <div className="w-1/4">
-//               <SelectInput
-//                 label="Type"
-//                 important
-//                 options={[
-//                   { value: "", label: "Select Type" },
-//                   { value: "Temporary Address", label: "Temporary Address" },
-//                   { value: "Permanent Address", label: "Permanent Address" },
-//                   { value: "Corporate Address", label: "Corporate Address" },
-//                   { value: "Billing Address", label: "Billing Address" },
-//                   { value: "Shipping Address", label: "Shipping Address" },
-//                   { value: "Postal Address", label: "Postal Address" },
-//                 ]}
-//                 // {...register("role", { required: "Role is required" })}
-//                 // onChange={(e) => {
-//                 //   setValue("role", e.target.value); // Update the value in React Hook Form
-//                 //   clearErrors("role"); // Clear error when value changes
-//                 // }}
-//               />
-//             </div>
-//             <div className="w-1/4">
-//               <Input
-//                 label="Company Name"
-//                 name="companyName"
-//                 placeholder="Enter Company Name"
-//               />
-//             </div>
-//             <div className="w-1/4 flex gap-4">
-//               <Input
-//                 label="Contact No."
-//                 name="contactNo"
-//                 type="number"
-//                 placeholder="Enter Contact"
-//               />
-//               <Input label="Unit" name="unit" placeholder="Enter Flat Number" />
-//             </div>
-//             <div className="w-1/4">
-//               <Input
-//                 label="Building"
-//                 name="building"
-//                 placeholder="Enter Building"
-//               />
-//             </div>
-//           </div>
-//           <div className="flex w-full justify-between gap-[40px]">
-//             <div className="w-1/4">
-//               <Input label="Street" name="street" placeholder="Enter Street" />
-//             </div>
-//             <div className="w-1/4 flex gap-4">
-//               <Input
-//                 label="Landmark"
-//                 name="landmark"
-//                 placeholder="Enter Landmark"
-//               />
-//               <Input label="Area" name="area" placeholder="Enter Area" />
-//             </div>
-//             <div className="w-1/4 flex gap-4">
-//               <SelectInput
-//                 label="Country"
-//                 important
-//                 options={[
-//                   { value: "", label: "Select Country" },
-//                   { value: "Admin", label: "Admin" },
-//                   { value: "User", label: "User" },
-//                 ]}
-//                 // {...register("role", { required: "Role is required" })}
-//                 // onChange={(e) => {
-//                 //   setValue("role", e.target.value); // Update the value in React Hook Form
-//                 //   clearErrors("role"); // Clear error when value changes
-//                 // }}
-//               />
-//               <SelectInput
-//                 label="State"
-//                 options={[
-//                   { value: "", label: "Select State" },
-//                   { value: "Admin", label: "Admin" },
-//                   { value: "User", label: "User" },
-//                 ]}
-//                 // {...register("role", { required: "Role is required" })}
-//                 // onChange={(e) => {
-//                 //   setValue("role", e.target.value); // Update the value in React Hook Form
-//                 //   clearErrors("role"); // Clear error when value changes
-//                 // }}
-//               />
-//             </div>
-//             <div className="w-1/4 flex gap-4">
-//               <SelectInput
-//                 label="City"
-//                 important
-//                 options={[
-//                   { value: "", label: "Select City" },
-//                   { value: "Admin", label: "Admin" },
-//                   { value: "User", label: "User" },
-//                 ]}
-//                 // {...register("role", { required: "Role is required" })}
-//                 // onChange={(e) => {
-//                 //   setValue("role", e.target.value); // Update the value in React Hook Form
-//                 //   clearErrors("role"); // Clear error when value changes
-//                 // }}
-//               />
-//               <Input
-//                 label="Zip Code"
-//                 name="zipcode"
-//                 type="number"
-//                 placeholder="Enter Zip Code"
-//               />
-//             </div>
-//           </div>
-//           <div className="flex gap-[10px] mt-2 w-full">
-//             <input type="checkbox" className="" />
-//             <div className="w-full flex ">
-//               <p className="font-semibold mr-2 text-[14px]">
-//                 Please check the box if the Address should be marked as Default.
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="flex justify-end gap-[20px]">
-//         <ButtonGroup />
-//       </div>
-//     </div>
-//   );
-// }
-
-import React, { useState } from "react";
+import React from "react";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import ButtonGroup from "./ButtonGroup";
+import { useForm } from "react-hook-form";
 
 export default function AddressDetails() {
-  // State hooks for selected country, state, and city
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      addressType: "",
+      companyName: "",
+      contactNo: "",
+      unit: "",
+      building: "",
+      street: "",
+      landmark: "",
+      area: "",
+      country: "",
+      state: "",
+      city: "",
+      zipcode: "",
+    },
+  });
 
   // Data structure for countries, states, and cities
 
@@ -255,13 +133,10 @@ export default function AddressDetails() {
         Northern_Ireland: ["Belfast", "Londonderry", "Lisburn"],
       },
     },
-
-    // Additional countries can be added here
   };
 
   // Country options for the dropdown
   const countryOptions = [
-    // { value: "", label: "Select Country" },
     { value: "India", label: "India" },
     { value: "Australia", label: "Australia" },
     { value: "Brazil", label: "Brazil" },
@@ -274,27 +149,38 @@ export default function AddressDetails() {
     { value: "Russia", label: "Russia" },
     { value: "South Africa", label: "South Africa" },
     { value: "United Kingdom", label: "United Kingdom" },
-    // Add more countries as needed
   ];
+
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
 
   // Generate state options based on the selected country
   const stateOptions = selectedCountry
-    ? Object.keys(data[selectedCountry].states).map((state) => ({
+    ? Object.keys(data[selectedCountry]?.states || {}).map((state) => ({
         value: state,
         label: state,
       }))
-    : undefined;
+    : [];
 
   // Generate city options based on the selected state
   const cityOptions = selectedState
-    ? data[selectedCountry].states[selectedState].map((city) => ({
+    ? data[selectedCountry]?.states[selectedState]?.map((city) => ({
         value: city,
         label: city,
       }))
-    : undefined;
+    : [];
+
+  const onSubmit = (data) => {
+    console.log("Submitted Data:", data);
+    if (onSubmit) {
+      console.log("submitted");
+    } else {
+      console.log("not submitted");
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="flex w-full gap-2">
         <div className="flex flex-col gap-4 w-[15%]">
           <DetailTitle title="Address Details" />
@@ -305,9 +191,11 @@ export default function AddressDetails() {
               <SelectInput
                 label="Type"
                 placeholder="Select Type"
+                {...register("addressType", {
+                  required: "Address Type is required",
+                })}
                 important
                 options={[
-                  // { value: "", label: "Select Type" },
                   { value: "Temporary Address", label: "Temporary Address" },
                   { value: "Permanent Address", label: "Permanent Address" },
                   { value: "Corporate Address", label: "Corporate Address" },
@@ -315,11 +203,20 @@ export default function AddressDetails() {
                   { value: "Shipping Address", label: "Shipping Address" },
                   { value: "Postal Address", label: "Postal Address" },
                 ]}
+                onChange={(e) => {
+                  setValue("addressType", e.target.value);
+                }}
               />
+              {errors.addressType && (
+                <p className="text-red-500 text-sm ml-[10px] mt-1">
+                  {errors.addressType.message}
+                </p>
+              )}
             </div>
             <div className="w-1/4">
               <Input
                 label="Company Name"
+                {...register("companyName")}
                 name="companyName"
                 placeholder="Enter Company Name"
               />
@@ -328,14 +225,21 @@ export default function AddressDetails() {
               <Input
                 label="Contact No."
                 name="contactNo"
+                {...register("contactNo")}
                 type="number"
                 placeholder="Enter Contact"
               />
-              <Input label="Unit" name="unit" placeholder="Enter Flat Number" />
+              <Input
+                label="Unit"
+                {...register("unit")}
+                name="unit"
+                placeholder="Enter Flat Number"
+              />
             </div>
             <div className="w-1/4">
               <Input
                 label="Building"
+                {...register("building")}
                 name="building"
                 placeholder="Enter Building"
               />
@@ -343,54 +247,96 @@ export default function AddressDetails() {
           </div>
           <div className="flex w-full justify-between gap-[40px]">
             <div className="w-1/4">
-              <Input label="Street" name="street" placeholder="Enter Street" />
+              <Input
+                label="Street"
+                name="street"
+                {...register("street")}
+                placeholder="Enter Street"
+              />
             </div>
             <div className="w-1/4 flex gap-4">
               <Input
                 label="Landmark"
+                {...register("landmark")}
                 name="landmark"
                 placeholder="Enter Landmark"
               />
-              <Input label="Area" name="area" placeholder="Enter Area" />
-            </div>
-            <div className="w-1/4 flex gap-4">
-              <SelectInput
-                label="Country"
-                placeholder="Select Country"
-                important
-                options={countryOptions}
-                value={selectedCountry}
-                onChange={(e) => {
-                  const country = e.target.value;
-                  setSelectedCountry(country);
-                  setSelectedState("");
-                  setSelectedCity("");
-                }}
-              />
-              <SelectInput
-                label="State"
-                options={stateOptions}
-                placeholder="Select State"
-                value={selectedState}
-                onChange={(e) => {
-                  const state = e.target.value;
-                  setSelectedState(state);
-                  setSelectedCity("");
-                }}
+
+              <Input
+                label="Area"
+                name="area"
+                {...register("area")}
+                placeholder="Enter Area"
               />
             </div>
             <div className="w-1/4 flex gap-4">
-              <SelectInput
-                label="City"
-                placeholder="Select City"
-                important
-                options={cityOptions}
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              />
+              <div className="flex flex-col w-full">
+                <SelectInput
+                  label="Country"
+                  placeholder="Select Country"
+                  {...register("country", { required: "Country is required" })}
+                  important
+                  options={countryOptions}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setValue("country", value);
+                    setValue("state", "");
+                    setValue("city", "");
+                    clearErrors("country");
+                  }}
+                />
+                {errors.country && (
+                  <p className="text-red-500 text-sm ml-[10px] mt-1">
+                    {errors.country.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col w-full">
+                <SelectInput
+                  label="State"
+                  {...register("state", { required: "State is required" })}
+                  options={stateOptions}
+                  important
+                  placeholder="Select State"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setValue("state", value);
+                    setValue("city", "");
+                    clearErrors("state");
+                  }}
+                  disabled={!selectedCountry}
+                />
+                {errors.state && (
+                  <p className="text-red-500 text-sm ml-[10px] mt-1">
+                    {errors.state.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="w-1/4 flex gap-4">
+              <div className="flex flex-col w-full">
+                <SelectInput
+                  label="City"
+                  {...register("city", { required: "City is required" })}
+                  placeholder="Select City"
+                  important
+                  options={cityOptions}
+                  onChange={(e) => {
+                    setValue("city", e.target.value);
+                    clearErrors("city");
+                  }}
+                  disabled={!selectedState}
+                />
+                {errors.city && (
+                  <p className="text-red-500 text-sm ml-[10px] mt-1">
+                    {errors.city.message}
+                  </p>
+                )}
+              </div>
               <Input
                 label="Zip Code"
                 name="zipcode"
+                {...register("zipcode")}
                 type="number"
                 placeholder="Enter Zip Code"
               />
@@ -407,8 +353,8 @@ export default function AddressDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup />
+        <ButtonGroup resetForm={reset} />
       </div>
-    </div>
+    </form>
   );
 }

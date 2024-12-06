@@ -14,10 +14,9 @@ export default function Registration() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState(""); // To handle server errors
+  const [serverError, setServerError] = useState("");
   const [users, setUsers] = useState([]);
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -26,7 +25,7 @@ export default function Registration() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      role: "", // Default role value for the select input
+      role: "",
     },
   });
 
@@ -51,10 +50,8 @@ export default function Registration() {
   const userExists = (email, role) => {
     return users.some((user) => user.email === email && user.role === role);
   };
-  // On form submission
   const onSubmit = async (data) => {
-    setServerError(""); // Reset server error
-    // console.log(data);
+    setServerError("");
     try {
       if (userExists(data.email, data.role)) {
         setServerError("A user with the same email and role already exists.");
@@ -62,7 +59,6 @@ export default function Registration() {
       }
 
       // Generate the next ID for the new user
-      // const nextId = users.length > 0 ? users.map((user) => user.id) + 1 : 1;
       const nextId = users.length > 0 ? users[users.length - 1].id + 1 : 1;
 
       // Post the new user data to the server
@@ -70,7 +66,6 @@ export default function Registration() {
       await axios.post("http://localhost:3000/users", newUserData);
       navigate("/login");
     } catch (error) {
-      // console.error("Error:", error);
       setServerError("Failed to register user. Please try again.");
     }
   };
@@ -84,7 +79,6 @@ export default function Registration() {
           className="w-full max-w-sm space-y-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {/* Name Field */}
           <div>
             <Input
               label="Name"
@@ -99,7 +93,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Email Field */}
           <div>
             <Input
               label="Email"
@@ -121,7 +114,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Mobile Number Field */}
           <div>
             <Input
               label="Mobile Number"
@@ -147,12 +139,10 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Role Field */}
           <div>
             <SelectInput
               label="Choose Role"
               options={[
-                { value: "", label: "Select Role" },
                 { value: "Admin", label: "Admin" },
                 { value: "User", label: "User" },
               ]}
@@ -160,8 +150,8 @@ export default function Registration() {
                 required: "Role is required",
               })}
               onChange={(e) => {
-                setValue("role", e.target.value); // Update the value in React Hook Form
-                clearErrors("role"); // Clear error when value changes
+                setValue("role", e.target.value);
+                clearErrors("role");
               }}
             />
             {errors.role && (
@@ -171,7 +161,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Password Field */}
           <div className="relative">
             <Input
               label="Password"
@@ -201,7 +190,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Server Error */}
           {serverError && (
             <p className="text-red-500 text-sm text-center">{serverError}</p>
           )}

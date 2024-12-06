@@ -2,7 +2,6 @@ import logo from "../assets/icons/logo.svg";
 import bankAccountLogo from "../assets/icons/bankAccountLogo.svg";
 import profilePhoto from "../assets/Images/profilePhoto.jpg";
 import { Link } from "react-router-dom";
-// import Navigation from "./Navigation";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkUserExistence } from "../utils/checkUserExistence"; // Import utility function
@@ -14,7 +13,6 @@ export default function Header() {
   const { username, role } = useSelector((state) => state.auth.user);
 
   const [showDropDown, setShowDropDown] = useState(false);
-  // console.log(username, role);
 
   const handleMouseEnter = () => {
     setShowDropDown(true);
@@ -66,7 +64,6 @@ export default function Header() {
           <div className="flex gap-8 items-center">
             <div
               className="account-details flex gap-1 cursor-pointer relative h-full items-center"
-              // onClick={handleDropDownTogle}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -117,10 +114,6 @@ export default function Header() {
           </div>
         </div>
       </header>
-      {/* <Navigation /> */}
-      {/* <div>
-        <Outlet />
-      </div> */}
     </>
   );
 }

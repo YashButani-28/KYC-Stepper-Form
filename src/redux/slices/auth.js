@@ -1,5 +1,5 @@
-import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../../utils/axios"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "../../utils/axios";
 
 const initialState = {
   isLoading: false, // loading state
@@ -9,26 +9,25 @@ const initialState = {
   error: null, // give an error
 };
 
-export const fetchUsers=createAsyncThunk(
+export const fetchUsers = createAsyncThunk(
   "auth/fetchUsers",
-  async(_,{rejectWithValue})=>{
-      try {
-          const response=await axios.get("http://localhost:3000/users")
-          
-          return await response.data;
-      } catch (error) {
-          return rejectWithValue(error.message);
-      }
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("http://localhost:3000/users");
+
+      return await response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
-)
+);
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-
     startLoading(state) {
-      state.isLoading = true; 
+      state.isLoading = true;
       state.error = null;
     },
 
@@ -37,19 +36,14 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
 
-
-  registerSuccess(state, action) {
-      // state.registrationData.push(action.payload); 
+    registerSuccess(state, action) {
       state.registrationData = [...state.registrationData, action.payload];
-      console.log("New user added:", action.payload); // Log the newly added user
-
-      // console.log("Updated registrationData:", registrationData); 
+      // console.log("New user added:", action.payload);
       state.isLoading = false;
     },
 
     login(state, action) {
-      state.isAuthenticated = true, 
-      state.user = action.payload;
+      (state.isAuthenticated = true), (state.user = action.payload);
       state.isLoading = false;
     },
 
@@ -63,22 +57,19 @@ const authSlice = createSlice({
       state.error = null;
     },
   },
-  extraReducers:(builder)=>{
+  extraReducers: (builder) => {
     builder
-    .addCase(fetchUsers.pending,(state)=>{
-        state.isLoading=true;
-        state.error=null;
-    })
-    .addCase(fetchUsers.fulfilled,(state,action)=>{
-        state.isLoading=false,
-        state.registrationData=action.payload
-    })
-    .addCase(fetchUsers.rejected,(state,action)=>{
-        state.isLoading=false,
-        state.error=action.payload
-    })
-  }
-  
+      .addCase(fetchUsers.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        (state.isLoading = false), (state.registrationData = action.payload);
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        (state.isLoading = false), (state.error = action.payload);
+      });
+  },
 });
 
 // Reducer
@@ -94,36 +85,20 @@ export const {
   clearError,
 } = authSlice.actions;
 
-
-
- export const fetchData=()=>async(dispatch)=>{
+export const fetchData = () => async (dispatch) => {
   // dispatch(startLoading());
   try {
-    // console.log("authSice",userData);
-    
-    const response=await axios.get("/users");
+    const response = await axios.get("/users");
     dispatch(registerSuccess(response.data));
-  
-    // dispatch(registerSuccess(response.data));
-    // console.log("User successfully registered:", response.data);
-
-    // const currentState=getState();
-    // console.log("currentRegiserData:", currentState);
-
   } catch (error) {
-    dispatch(hasError("Failed to register user. Please try again!"))
-    // console.log("Registration error:", error);
+    dispatch(hasError("Failed to register user. Please try again!"));
   }
+};
 
-}
-
-export const sendUserData=(data)=>async(dispatch)=>{
+export const sendUserData = (data) => async (dispatch) => {
   try {
-    
-    dispatch(login(data))
-
+    dispatch(login(data));
   } catch (error) {
-    dispatch(hasError("Failed to receive user data. Please try again!"))
+    dispatch(hasError("Failed to receive user data. Please try again!"));
   }
-
-}
+};
