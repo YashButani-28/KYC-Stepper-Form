@@ -2,7 +2,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./Auth/Login.jsx";
 import Registration from "./Auth/Registration.jsx";
-import Logout from "./Auth/logout.jsx";
+import Logout from "./Auth/Logout.jsx";
 import BasicDetails from "./components/forms/BasicDetails.jsx";
 import Layout from "./components/Layout.jsx";
 import TermsDetails from "./components/forms/TermsDetails.jsx";
