@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export default function Navigation() {
+export default function Navigation({ stepCompleted }) {
   return (
     <>
       <div className="Nav-bar bg-secondery w-full h-[40px]">
@@ -8,9 +8,11 @@ export default function Navigation() {
           <NavLink
             to="basic-details"
             className={({ isActive }) =>
-              isActive
-                ? "border-b-2 border-primary flex items-center h-full"
-                : undefined
+              stepCompleted[0]
+                ? isActive
+                  ? "border-b-2 border-primary flex items-center h-full"
+                  : undefined
+                : "pointer-events-none text-gray-500"
             }
           >
             <li className="">Basic Details</li>
@@ -19,9 +21,11 @@ export default function Navigation() {
           <NavLink
             to="terms-datails"
             className={({ isActive }) =>
-              isActive
-                ? "border-b-2 border-primary flex items-center h-full"
-                : undefined
+              stepCompleted[1]
+                ? isActive
+                  ? "border-b-2 border-primary flex items-center h-full"
+                  : undefined
+                : "pointer-events-none text-gray-500"
             }
           >
             <li className="">Terms Details</li>
@@ -29,9 +33,11 @@ export default function Navigation() {
           <NavLink
             to="user-details"
             className={({ isActive }) =>
-              isActive
-                ? "border-b-2 border-primary flex items-center h-full"
-                : undefined
+              stepCompleted[2]
+                ? isActive
+                  ? "border-b-2 border-primary flex items-center h-full"
+                  : undefined
+                : "pointer-events-none text-gray-500"
             }
           >
             <li className="">User Details</li>
@@ -39,9 +45,11 @@ export default function Navigation() {
           <NavLink
             to="address-details"
             className={({ isActive }) =>
-              isActive
-                ? "border-b-2 border-primary flex items-center h-full"
-                : undefined
+              stepCompleted[3]
+                ? isActive
+                  ? "border-b-2 border-primary flex items-center h-full"
+                  : undefined
+                : "pointer-events-none text-gray-500"
             }
           >
             <li className="">Address Details</li>

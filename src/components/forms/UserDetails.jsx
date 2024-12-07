@@ -4,12 +4,16 @@ import SelectInput from "../formComponents/SelectInput";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import ButtonGroup from "../formComponents/ButtonGroup";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { saveFormData } from "../../redux/slices/forms";
 
 export default function UserDetails() {
+  const { markStepCompleted } = useOutletContext();
+
+  const form3 = useSelector((state) => state.forms);
+  const UserDetails = form3.kycForms.form3;
   const dispatch = useDispatch();
 
   const [submitAction, setSubmitAction] = useState("");
@@ -38,15 +42,24 @@ export default function UserDetails() {
       belgiumPer: "",
     },
   });
+  useEffect(() => {
+    // Reset form values when BasicDetails updates
+    if (UserDetails) {
+      reset(UserDetails);
+    }
+  }, [UserDetails, reset]);
+
   const [showPassword, setShowPassword] = useState(false);
   const onSubmit = (data) => {
     if (submitAction === "save") {
       dispatch(saveFormData({ formId: 3, data }));
+      markStepCompleted(3);
 
       console.log("Save data:", data);
       // Add your save logic here
     } else if (submitAction === "saveAndNext") {
       dispatch(saveFormData({ formId: 3, data }));
+      markStepCompleted(3);
 
       console.log("Save and Next data:", data);
       // Add your save logic here

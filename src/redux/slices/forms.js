@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import axios from 'axios';
 
 
 const initialState = {
@@ -66,57 +67,44 @@ export const saveFormData = ({ formId, data }) => async (dispatch, getState) => 
 };
 
 
-// export const dataTransmit = () => (dispatch, getState) => {
-//     try {
-//       // Get the current state from the store
-//       const state = getState();
-//     //   const kycForms = state.form.kycForms; // Access the kycForms part of the state
-  
-//       // Log the kycForms data
-//       const forms= (state.forms.kycForms);
-
-//    if (forms) {
-//       Object.keys(forms).forEach((formKey) => {
-//         console.log(`Form ${formKey}:`, forms[formKey]);
-//       });
-
-//       console.log("All form data exported successfully!");
-//     } else {
-//       console.error("No form data found in the state.");
-//     }
-//     } catch (error) {
-//       console.error("Failed to export form data:", error);
-//     }
-//   };
-
-
-import axios from 'axios';
-
-export const dataTransmit = () => async (dispatch, getState) => {
+export const dataTransmit = (userId) => async (dispatch, getState) => {
   try {
     // Get the current state from the store
     const state = getState();
     const forms = state.forms.kycForms;
 
     if (forms) {
-      // Iterate over each form and send its data to the API
-      for (const formKey in forms) {
-        if (forms[formKey] !== null) {
-          const formData = forms[formKey];
-          try {
-            // Sending form data to the API endpoint for each form
-            const response = await axios.post("http://localhost:3000/users", {
-              formId: formKey,
-              data: formData
-            });
-            console.log(`Form ${formKey} data successfully sent:`, response.data);
-          } catch (error) {
-            console.error(`Failed to send data for ${formKey}:`, error);
-          }
-        }
-      }
+      // Fetch users from the server to find the matching userId
+      const response = await axios.get("http://localhost:3000/users");
+      const users = response.data;
 
-      console.log("All form data exported successfully!");
+      // Find the user object with the matching userId
+      const user = users.find((user) => (user.id) == (userId));
+// console.log(typeof user.id)
+// console.log(typeof userId)
+
+
+      if (user) {
+        // Create a copy of the user object, preserving user registration details
+        const updatedUser = {
+          ...user,
+          kycForms: {
+            ...user.kycForms,
+            ...forms, // Merge new form data into existing kycForms
+          },
+        };
+
+        // Update the kycForms for the matching user
+        const updateResponse = await axios.put(
+          `http://localhost:3000/users/${userId}`,
+          updatedUser
+        );
+
+        console.log("User updated successfully:", updateResponse.data);
+        console.log("All form data exported successfully!");
+      } else {
+        console.error(`User with ID ${userId} not found.`);
+      }
     } else {
       console.error("No form data found in the state.");
     }
@@ -124,5 +112,3 @@ export const dataTransmit = () => async (dispatch, getState) => {
     console.error("Failed to export form data:", error);
   }
 };
-
-  

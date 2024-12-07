@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import { useForm } from "react-hook-form";
 import ButtonGroup from "../formComponents/ButtonGroup";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveFormData } from "../../redux/slices/forms";
 import { dataTransmit } from "../../redux/slices/forms";
 
 export default function AddressDetails() {
+  const form4 = useSelector((state) => state.forms);
+  const AddressDetails = form4.kycForms.form4;
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.auth.user.userId);
 
   const [submitAction, setSubmitAction] = useState("");
   const navigate = useNavigate();
@@ -39,6 +42,13 @@ export default function AddressDetails() {
       zipcode: "",
     },
   });
+
+  useEffect(() => {
+    // Reset form values when BasicDetails updates
+    if (AddressDetails) {
+      reset(AddressDetails);
+    }
+  }, [AddressDetails, reset]);
 
   // Data structure for countries, states, and cities
 
@@ -186,9 +196,12 @@ export default function AddressDetails() {
       console.log("Save data:", data);
       // Add your save logic here
     } else if (submitAction === "submit") {
-      dispatch(dataTransmit());
+      dispatch(saveFormData({ formId: 4, data }));
 
-      console.log("Submit data:", data);
+      dispatch(dataTransmit(userId));
+      // console.log(userId);
+
+      console.log("Submit dataaaa:", data);
       // Add your save logic here
       navigate("/layout/address-details"); // view details redirection
     }

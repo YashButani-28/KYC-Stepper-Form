@@ -59,13 +59,14 @@ export default function Registration() {
       }
 
       // Generate the next ID for the new user
-      const nextId = users.length > 0 ? users[users.length - 1].id + 1 : 1;
+      const nextId =
+        users.length > 0 ? Number(users[users.length - 1].id) + 1 : 1;
 
       // Post the new user data to the server
       const newUserData = {
         ...data,
-        id: nextId,
-        kycForms: { form1: {}, form2: {}, form3: {}, form4: {} },
+        id: String(nextId),
+        // kycForms: { form1: {}, form2: {}, form3: {}, form4: {} },
       };
       await axios.post("http://localhost:3000/users", newUserData);
       navigate("/login");

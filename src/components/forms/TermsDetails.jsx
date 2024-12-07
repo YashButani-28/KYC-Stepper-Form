@@ -3,12 +3,15 @@ import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import ButtonGroup from "../formComponents/ButtonGroup";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { saveFormData } from "../../redux/slices/forms";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function TermsDetails() {
+  const { markStepCompleted } = useOutletContext();
+  const form2 = useSelector((state) => state.forms);
+  const TermsDetails = form2.kycForms.form2;
   const dispatch = useDispatch();
   const [submitAction, setSubmitAction] = useState("");
   const navigate = useNavigate();
@@ -35,6 +38,12 @@ export default function TermsDetails() {
       commBroker1: "",
     },
   });
+  useEffect(() => {
+    // Reset form values when BasicDetails updates
+    if (TermsDetails) {
+      reset(TermsDetails);
+    }
+  }, [TermsDetails, reset]);
 
   const watchAadatParty = watch("aadatParty");
 
@@ -67,9 +76,11 @@ export default function TermsDetails() {
       dispatch(saveFormData({ formId: 2, data }));
 
       console.log("Save data:", data);
+      markStepCompleted(2);
       // Add your save logic here
     } else if (submitAction === "saveAndNext") {
       dispatch(saveFormData({ formId: 2, data }));
+      markStepCompleted(2);
 
       console.log("Save and Next data:", data);
       // Add your save logic here

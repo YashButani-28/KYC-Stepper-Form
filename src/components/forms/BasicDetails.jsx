@@ -3,13 +3,17 @@ import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import ButtonGroup from "../formComponents/ButtonGroup";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 // import { setFormData } from "../redux/slices/forms";
 import { saveFormData } from "../../redux/slices/forms";
 
 export default function BasicDetails() {
+  const { markStepCompleted } = useOutletContext();
+  const form1 = useSelector((state) => state.forms);
+  const BasicDetails = form1.kycForms.form1;
+
   const [submitAction, setSubmitAction] = useState("");
   // const form1 = useSelector((state) => state.form.kycForms.form1);
   const navigate = useNavigate();
@@ -41,6 +45,13 @@ export default function BasicDetails() {
       department: "",
     },
   });
+
+  useEffect(() => {
+    // Reset form values when BasicDetails updates
+    if (BasicDetails) {
+      reset(BasicDetails);
+    }
+  }, [BasicDetails, reset]);
 
   const watchCategory = watch("category");
   const watchSalesPerson = watch("salesPerson");
@@ -123,12 +134,13 @@ export default function BasicDetails() {
     if (submitAction === "save") {
       // dispatch(formData1(data));
       dispatch(saveFormData({ formId: 1, data }));
+      markStepCompleted(1);
 
       console.log("Save data:", data);
       // Add your save logic here
     } else if (submitAction === "saveAndNext") {
       dispatch(saveFormData({ formId: 1, data }));
-
+      markStepCompleted(1);
       console.log("Save and Next data:", data);
       // Add your save logic here
       navigate("/layout/terms-datails");

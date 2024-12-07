@@ -64,7 +64,7 @@ export default function Login() {
           // Dispatch user data to Redux store
           dispatch(
             sendUserData({
-              usersId: user.id,
+              userId: user.id,
               username: user.name,
               role: user.role,
             })
