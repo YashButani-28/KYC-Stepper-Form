@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
-import ButtonGroup from "./ButtonGroup";
 import { useForm } from "react-hook-form";
+import ButtonGroup from "../formComponents/ButtonGroup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { saveFormData } from "../../redux/slices/forms";
+import { dataTransmit } from "../../redux/slices/forms";
 
 export default function AddressDetails() {
+  const dispatch = useDispatch();
+
+  const [submitAction, setSubmitAction] = useState("");
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -37,8 +46,8 @@ export default function AddressDetails() {
     India: {
       states: {
         Maharashtra: ["Mumbai", "Pune", "Nagpur"],
-        Uttar_Pradesh: ["Lucknow", "Kanpur", "Varanasi"],
-        Tamil_Nadu: ["Chennai", "Coimbatore", "Madurai"],
+        "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi"],
+        "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
         Karnataka: ["Bangalore", "Mysore", "Hubli"],
         Gujarat: ["Ahmedabad", "Surat", "Vadodara"],
       },
@@ -50,7 +59,7 @@ export default function AddressDetails() {
         Victoria: ["Melbourne", "Geelong", "Ballarat"],
         Queensland: ["Brisbane", "Gold Coast", "Cairns"],
         "Western Australia": ["Perth", "Bunbury", "Mandurah"],
-        South_Australia: ["Adelaide", "Mount Gambier", "Whyalla"],
+        "South Australia": ["Adelaide", "Mount Gambier", "Whyalla"],
       },
     },
     Brazil: {
@@ -69,10 +78,10 @@ export default function AddressDetails() {
         Alberta: ["Calgary", "Edmonton", "Red Deer"],
       },
     },
-    United_States: {
+    "United States": {
       states: {
         California: ["Los Angeles", "San Francisco", "San Diego"],
-        New_York: ["New York City", "Buffalo", "Rochester"],
+        "New York": ["New York City", "Buffalo", "Rochester"],
         Texas: ["Austin", "Dallas", "Houston"],
         Florida: ["Miami", "Orlando", "Tampa"],
       },
@@ -105,32 +114,32 @@ export default function AddressDetails() {
       states: {
         Punjab: ["Lahore", "Faisalabad", "Rawalpindi"],
         Sindh: ["Karachi", "Hyderabad", "Sukkur"],
-        Khyber_Pakhtunkhwa: ["Peshawar", "Mardan", "Abbottabad"],
+        "Khyber Pakhtunkhwa": ["Peshawar", "Mardan", "Abbottabad"],
         Balochistan: ["Quetta", "Gwadar", "Zhob"],
       },
     },
     Russia: {
       states: {
         Moscow: ["Moscow City"],
-        St_Petersburg: ["St. Petersburg City"],
+        "St Petersburg": ["St. Petersburg City"],
         Tatarstan: ["Kazan", "Naberezhnye Chelny"],
         Siberia: ["Novosibirsk", "Omsk", "Krasnoyarsk"],
       },
     },
-    South_Africa: {
+    "South Africa": {
       states: {
         Gauteng: ["Johannesburg", "Pretoria", "Ekurhuleni"],
-        Western_Cape: ["Cape Town", "Paarl", "George"],
-        KwaZulu_Natal: ["Durban", "Pietermaritzburg", "Richards Bay"],
-        Eastern_Cape: ["Port Elizabeth", "East London"],
+        "Western Cape": ["Cape Town", "Paarl", "George"],
+        "KwaZulu Natal": ["Durban", "Pietermaritzburg", "Richards Bay"],
+        "Eastern Cape": ["Port Elizabeth", "East London"],
       },
     },
-    United_Kingdom: {
+    "United Kingdom": {
       states: {
         England: ["London", "Manchester", "Birmingham"],
         Scotland: ["Edinburgh", "Glasgow", "Aberdeen"],
         Wales: ["Cardiff", "Swansea", "Newport"],
-        Northern_Ireland: ["Belfast", "Londonderry", "Lisburn"],
+        "Northern Ireland": ["Belfast", "Londonderry", "Lisburn"],
       },
     },
   };
@@ -171,12 +180,25 @@ export default function AddressDetails() {
     : [];
 
   const onSubmit = (data) => {
-    console.log("Submitted Data:", data);
-    if (onSubmit) {
-      console.log("submitted");
-    } else {
-      console.log("not submitted");
+    if (submitAction === "save") {
+      dispatch(saveFormData({ formId: 4, data }));
+
+      console.log("Save data:", data);
+      // Add your save logic here
+    } else if (submitAction === "submit") {
+      dispatch(dataTransmit());
+
+      console.log("Submit data:", data);
+      // Add your save logic here
+      navigate("/layout/address-details"); // view details redirection
     }
+  };
+  const handleSave = () => {
+    setSubmitAction("save");
+  };
+
+  const SubmitData = () => {
+    setSubmitAction("submit");
   };
 
   return (
@@ -353,7 +375,13 @@ export default function AddressDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup resetForm={reset} />
+        <ButtonGroup
+          previousPath="user-details"
+          ResetButton={reset}
+          onSave={handleSave}
+          submitButton
+          onSubmit={SubmitData}
+        />
       </div>
     </form>
   );

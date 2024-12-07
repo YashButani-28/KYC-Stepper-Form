@@ -1,28 +1,18 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "role": "Admin",
-      "name": "Hiten",
-      "email": "hiren@gmail.com",
-      "contact_no": "1231231233",
-      "password": "hiten@123"
-    },
-    {
-      "id": 2,
-      "role": "User",
-      "name": "www",
-      "email": "hiren@gmail.com",
-      "contact_no": "1231231232",
-      "password": "wqqwqw"
-    },
-    {
-      "id": 3,
-      "role": "Admin",
-      "name": "Yash",
+      "name": "Yash Butani",
       "email": "yash@gmail.com",
       "contact_no": "21212121212",
-      "password": "yash@123"
+      "password": "yash@123",
+      "kycForms": {
+        "form1": {},
+        "form2": {},
+        "form3": {},
+        "form4": {}
+      }
     }
   ]
 }

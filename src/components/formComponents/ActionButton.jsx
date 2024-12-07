@@ -10,6 +10,7 @@ export default function ActionButton({
     primary: "bg-[#6B5DC7] text-white hover:bg-[#6356b4]",
     gray: "bg-[#BEBEBE] text-[#06031C] hover:bg-[#a6a6a6]",
     darkGray: "bg-[#696774] text-white hover:bg-[#575560]",
+    black: "bg-black text-white hover:bg-[#3d3d3d]",
   };
   return (
     <button

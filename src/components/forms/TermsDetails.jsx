@@ -1,9 +1,17 @@
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
-import ButtonGroup from "./ButtonGroup";
+import ButtonGroup from "../formComponents/ButtonGroup";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { saveFormData } from "../../redux/slices/forms";
+import { useDispatch } from "react-redux";
+
 export default function TermsDetails() {
+  const dispatch = useDispatch();
+  const [submitAction, setSubmitAction] = useState("");
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -55,12 +63,25 @@ export default function TermsDetails() {
   };
 
   const onSubmit = (data) => {
-    console.log("Submitted Data:", data);
-    if (onSubmit) {
-      console.log("submitted");
-    } else {
-      console.log("not submitted");
+    if (submitAction === "save") {
+      dispatch(saveFormData({ formId: 2, data }));
+
+      console.log("Save data:", data);
+      // Add your save logic here
+    } else if (submitAction === "saveAndNext") {
+      dispatch(saveFormData({ formId: 2, data }));
+
+      console.log("Save and Next data:", data);
+      // Add your save logic here
+      navigate("/layout/user-details");
     }
+  };
+  const handleSave = () => {
+    setSubmitAction("save");
+  };
+
+  const handleSaveAndNext = () => {
+    setSubmitAction("saveAndNext");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
@@ -280,7 +301,12 @@ export default function TermsDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup resetForm={reset} />
+        <ButtonGroup
+          previousPath="basic-details"
+          ResetButton={reset}
+          onSave={handleSave}
+          onSaveAndNext={handleSaveAndNext}
+        />
       </div>
     </form>
   );

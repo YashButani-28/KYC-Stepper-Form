@@ -1,17 +1,25 @@
-import { useState } from "react";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import ButtonGroup from "./ButtonGroup";
 import { useForm } from "react-hook-form";
+import ButtonGroup from "../formComponents/ButtonGroup";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { saveFormData } from "../../redux/slices/forms";
 
 export default function UserDetails() {
+  const dispatch = useDispatch();
+
+  const [submitAction, setSubmitAction] = useState("");
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setValue,
     reset,
+    watch,
     clearErrors,
     formState: { errors },
   } = useForm({
@@ -31,15 +39,29 @@ export default function UserDetails() {
     },
   });
   const [showPassword, setShowPassword] = useState(false);
-
   const onSubmit = (data) => {
-    console.log("Submitted Data:", data);
-    if (onSubmit) {
-      console.log("submitted");
-    } else {
-      console.log("not submitted");
+    if (submitAction === "save") {
+      dispatch(saveFormData({ formId: 3, data }));
+
+      console.log("Save data:", data);
+      // Add your save logic here
+    } else if (submitAction === "saveAndNext") {
+      dispatch(saveFormData({ formId: 3, data }));
+
+      console.log("Save and Next data:", data);
+      // Add your save logic here
+      navigate("/layout/address-details");
     }
   };
+  const handleSave = () => {
+    setSubmitAction("save");
+  };
+
+  const handleSaveAndNext = () => {
+    setSubmitAction("saveAndNext");
+  };
+
+  const password = watch("password");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
@@ -162,6 +184,8 @@ export default function UserDetails() {
                 type={showPassword ? "text" : "password"}
                 {...register("confirmPassword", {
                   required: "Confirm Password is required",
+                  validate: (value) =>
+                    value === password || "Passwords must be match",
                 })}
                 name="confirmPassword"
                 important
@@ -262,7 +286,12 @@ export default function UserDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup resetForm={reset} />
+        <ButtonGroup
+          previousPath="terms-datails"
+          ResetButton={reset}
+          onSave={handleSave}
+          onSaveAndNext={handleSaveAndNext}
+        />
       </div>
     </form>
   );

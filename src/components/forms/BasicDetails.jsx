@@ -2,8 +2,19 @@ import { useForm } from "react-hook-form";
 import DetailTitle from "../DetailTitle";
 import Input from "../formComponents/Input";
 import SelectInput from "../formComponents/SelectInput";
-import ButtonGroup from "./ButtonGroup";
+import ButtonGroup from "../formComponents/ButtonGroup";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+// import { setFormData } from "../redux/slices/forms";
+import { saveFormData } from "../../redux/slices/forms";
+
 export default function BasicDetails() {
+  const [submitAction, setSubmitAction] = useState("");
+  // const form1 = useSelector((state) => state.form.kycForms.form1);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -51,14 +62,14 @@ export default function BasicDetails() {
       "Agriculture",
     ],
     LLP: ["Service Sector", "Trading", "Manufacturing", "E-commerce"],
-    PrivateLimited: [
+    "Private Limited": [
       "Service Sector",
       "Trading",
       "Manufacturing",
       "E-commerce",
       "Agriculture",
     ],
-    PublicLimited: [
+    " Public Limited": [
       "Service Sector",
       "Trading",
       "Manufacturing",
@@ -109,12 +120,26 @@ export default function BasicDetails() {
   };
 
   const onSubmit = (data) => {
-    console.log("Submitted Data:", data);
-    if (onSubmit) {
-      console.log("submitted");
-    } else {
-      console.log("not submitted");
+    if (submitAction === "save") {
+      // dispatch(formData1(data));
+      dispatch(saveFormData({ formId: 1, data }));
+
+      console.log("Save data:", data);
+      // Add your save logic here
+    } else if (submitAction === "saveAndNext") {
+      dispatch(saveFormData({ formId: 1, data }));
+
+      console.log("Save and Next data:", data);
+      // Add your save logic here
+      navigate("/layout/terms-datails");
     }
+  };
+  const handleSave = () => {
+    setSubmitAction("save");
+  };
+
+  const handleSaveAndNext = () => {
+    setSubmitAction("saveAndNext");
   };
 
   return (
@@ -135,7 +160,6 @@ export default function BasicDetails() {
               important
               {...register("category", { required: "Category is required" })}
               options={[
-                // { value: "", label: "Select Category" },
                 { value: "Proprietor", label: "Proprietor" },
                 { value: "Partnership", label: "Partnership" },
                 { value: "LLP", label: "LLP" },
@@ -145,9 +169,9 @@ export default function BasicDetails() {
               ]}
               onChange={(e) => {
                 const selectedCategory = e.target.value;
-                setValue("category", selectedCategory); // Update category value
+                setValue("category", selectedCategory);
                 setValue("businessType", "");
-                clearErrors("category"); // Reset Business Type when category changes
+                clearErrors("category");
               }}
             />
             {errors.category && (
@@ -186,8 +210,6 @@ export default function BasicDetails() {
             onChange={(e) => {
               setValue("businessType", e.target.value);
             }}
-
-            // disabled={!watchCategory}
           />
           <Input
             {...register("gstNo")}
@@ -439,7 +461,12 @@ export default function BasicDetails() {
         </div>
       </div>
       <div className="flex justify-end gap-[20px]">
-        <ButtonGroup resetForm={reset} />
+        <ButtonGroup
+          noPreviousButton
+          ResetButton={reset}
+          onSave={handleSave}
+          onSaveAndNext={handleSaveAndNext}
+        />
       </div>
     </form>
   );

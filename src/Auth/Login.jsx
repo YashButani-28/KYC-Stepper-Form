@@ -62,10 +62,16 @@ export default function Login() {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
           // Dispatch user data to Redux store
-          dispatch(sendUserData({ username: user.name, role: user.role }));
+          dispatch(
+            sendUserData({
+              usersId: user.id,
+              username: user.name,
+              role: user.role,
+            })
+          );
 
           // Navigate to the next page with user info
-          navigate("/layout", {
+          navigate("/layout/basic-details", {
             state: { username: user.name, role: user.role, usersId: user.id },
           });
         } else {
