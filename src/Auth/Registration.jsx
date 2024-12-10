@@ -1,86 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import AuthPageImage from "./AuthPageImage";
-import Input from "../FormComponents/Input";
-import SelectInput from "../FormComponents/SelectInput";
-import AuthButtons from "../FormComponents/AuthButtons";
+import Input from "./AuthComponents/Input";
+import SelectInput from "./AuthComponents/SelectInput";
+import AuthButtons from "./AuthComponents/AuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../redux/slices/auth";
 
 export default function Registration() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState(""); // To handle server errors
+  const [serverError, setServerError] = useState("");
+  const [users, setUsers] = useState([]);
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      role: "", // Default role value for the select input
+      role: "",
     },
   });
 
-  // Watch field values
-  const selectedRole = watch("role");
+  // data fetch from server and store to redux store
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-  // Generate Unique ID
-  const generateUniqueId = async () => {
-    let uniqueId;
-    try {
-      const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) throw new Error("Failed to fetch users.");
-      const existingUsers = await response.json();
-      do {
-        uniqueId = Math.floor(Math.random() * 1000000);
-      } while (existingUsers.some((user) => user.id === uniqueId));
-    } catch (error) {
-      console.error("Error generating unique ID:", error);
-    }
-    return uniqueId;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/users");
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setServerError("Failed to load user data. Please try again.");
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const userExists = (email, role) => {
+    return users.some((user) => user.email === email && user.role === role);
   };
-
-  // On form submission
   const onSubmit = async (data) => {
-    setServerError(""); // Reset server error
+    setServerError("");
     try {
-      const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) throw new Error("Failed to fetch users.");
-      const existingUsers = await response.json();
-
-      const existingUserWithEmail = existingUsers.find(
-        (user) => user.email === data.email
-      );
-
-      if (existingUserWithEmail && existingUserWithEmail.role === data.role) {
-        setServerError("An account with this email and role already exists.");
+      if (userExists(data.email, data.role)) {
+        setServerError("A user with the same email and role already exists.");
         return;
       }
 
-      const newUserId = await generateUniqueId();
-      const userData = {
+      // Generate the next ID for the new user
+      const nextId =
+        users.length > 0 ? Number(users[users.length - 1].id) + 1 : 1;
+
+      // Post the new user data to the server
+      const newUserData = {
         ...data,
-        id: newUserId, // Assign unique ID
+        id: String(nextId),
+        // kycForms: { form1: {}, form2: {}, form3: {}, form4: {} },
       };
-
-      const postResponse = await fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!postResponse.ok) throw new Error("Failed to register user.");
-
+      await axios.post("http://localhost:3000/users", newUserData);
       navigate("/login");
     } catch (error) {
-      console.error("Error:", error);
       setServerError("Failed to register user. Please try again.");
     }
   };
@@ -94,7 +84,6 @@ export default function Registration() {
           className="w-full max-w-sm space-y-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {/* Name Field */}
           <div>
             <Input
               label="Name"
@@ -109,7 +98,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Email Field */}
           <div>
             <Input
               label="Email"
@@ -120,7 +108,7 @@ export default function Registration() {
                 required: "Email is required",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Email should like this, john.xyz@example",
+                  message: "Email should look like this, john.xyz@example",
                 },
               })}
             />
@@ -131,7 +119,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Mobile Number Field */}
           <div>
             <Input
               label="Mobile Number"
@@ -146,7 +133,7 @@ export default function Registration() {
                 },
                 maxLength: {
                   value: 12,
-                  message: "Mobile number must be at most 12   digits",
+                  message: "Mobile number must be at most 12 digits",
                 },
               })}
             />
@@ -157,12 +144,10 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Role Field */}
           <div>
             <SelectInput
               label="Choose Role"
               options={[
-                { value: "", label: "Select Role" },
                 { value: "Admin", label: "Admin" },
                 { value: "User", label: "User" },
               ]}
@@ -170,8 +155,8 @@ export default function Registration() {
                 required: "Role is required",
               })}
               onChange={(e) => {
-                setValue("role", e.target.value); // Update the value in React Hook Form
-                clearErrors("role"); // Clear error when value changes
+                setValue("role", e.target.value);
+                clearErrors("role");
               }}
             />
             {errors.role && (
@@ -181,7 +166,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Password Field */}
           <div className="relative">
             <Input
               label="Password"
@@ -211,7 +195,6 @@ export default function Registration() {
             )}
           </div>
 
-          {/* Server Error */}
           {serverError && (
             <p className="text-red-500 text-sm text-center">{serverError}</p>
           )}

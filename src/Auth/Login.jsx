@@ -1,24 +1,26 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../FormComponents/Input";
-import SelectInput from "../FormComponents/SelectInput";
+import Input from "./AuthComponents/Input";
+import SelectInput from "./AuthComponents/SelectInput";
 import AuthPageImage from "./AuthPageImage";
 import { Link, useNavigate } from "react-router-dom";
-import AuthButtons from "../FormComponents/AuthButtons";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons from react-icons
+import AuthButtons from "./AuthComponents/AuthButtons";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { sendUserData } from "../redux/slices/auth";
+import KJUR from "jsrsasign";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
-
-  // React Hook Form setup
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -28,17 +30,12 @@ export default function Login() {
     },
   });
 
-  // Watch field values
-  // const selectedRole = watch("role");
-
-  // Handle form submission
   const onSubmit = async (data) => {
-    setServerError(""); // Reset server error
+    setServerError("");
     try {
-      const response = await fetch("http://localhost:3000/users"); // Adjust the URL as needed
-      if (!response.ok) throw new Error("Failed to fetch users.");
+      const response = await axios.get("http://localhost:3000/users");
 
-      const users = await response.json();
+      const users = await response.data;
 
       const user = users.find(
         (user) => user.email === data.email && user.role === data.role
@@ -46,10 +43,35 @@ export default function Login() {
 
       if (user) {
         if (user.password === data.password) {
-          const token = `token-${new Date().getTime()}`;
+          // JWT token generation using jsrsasign
+          const header = { alg: "HS256", typ: "JWT" };
+          const payload = { id: user.id, email: user.email, role: user.role };
+          const secretKey = "yourSecretKey"; // Replace with a secure key
+
+          const token = KJUR.jws.JWS.sign(
+            "HS256",
+            JSON.stringify(header),
+            JSON.stringify(payload),
+            secretKey
+          );
+
+          // Store token in local storage
           localStorage.setItem("authToken", token);
 
-          navigate("/header", {
+          // Set token in axios headers for future requests
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+          // Dispatch user data to Redux store
+          dispatch(
+            sendUserData({
+              userId: user.id,
+              username: user.name,
+              role: user.role,
+            })
+          );
+
+          // Navigate to the next page with user info
+          navigate("/layout/basic-details", {
             state: { username: user.name, role: user.role, usersId: user.id },
           });
         } else {
@@ -87,7 +109,7 @@ export default function Login() {
                 required: "Email is required",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Email should like this, john.xyz@example",
+                  message: "Email should look like, john.xyz@example",
                 },
               })}
             />
@@ -98,19 +120,17 @@ export default function Login() {
             )}
           </div>
 
-          {/* Role Field */}
           <div>
             <SelectInput
               label="Choose Role"
               options={[
-                { value: "", label: "Select Role" },
                 { value: "Admin", label: "Admin" },
                 { value: "User", label: "User" },
               ]}
               {...register("role", { required: "Role is required" })}
               onChange={(e) => {
-                setValue("role", e.target.value); // Update the value in React Hook Form
-                clearErrors("role"); // Clear error when value changes
+                setValue("role", e.target.value);
+                clearErrors("role");
               }}
             />
             {errors.role && (
@@ -120,7 +140,6 @@ export default function Login() {
             )}
           </div>
 
-          {/* Password Field */}
           <div className="relative">
             <Input
               label="Password"
@@ -149,8 +168,6 @@ export default function Login() {
               </p>
             )}
           </div>
-
-          {/* Server Error */}
           {serverError && (
             <p className="text-red-500 text-sm text-center">{serverError}</p>
           )}

@@ -1,14 +1,9 @@
-// import React, { forwardRef } from "react";
+import React, { forwardRef } from "react";
 
-const SelectInput = ({
-  options,
-  important,
-  value,
-  onChange,
-  label,
-  placeholder,
-  className = "",
-}) => {
+const SelectInput = (
+  { options, important, value, onChange, label, placeholder, className = "" },
+  ref
+) => {
   return (
     <div>
       {label && (
@@ -20,6 +15,7 @@ const SelectInput = ({
       <select
         value={value}
         onChange={onChange}
+        ref={ref}
         className={`w-full p-2 rounded border border-[#ccc] ${className}`}
       >
         <option value="" disabled>
@@ -35,4 +31,4 @@ const SelectInput = ({
   );
 };
 
-export default SelectInput;
+export default forwardRef(SelectInput);
