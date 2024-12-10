@@ -203,7 +203,7 @@ export default function AddressDetails() {
 
       console.log("Submit dataaaa:", data);
       // Add your save logic here
-      navigate("/layout/address-details"); // view details redirection
+      navigate("/layout/view-details"); // view details redirection
     }
   };
   const handleSave = () => {
@@ -260,10 +260,16 @@ export default function AddressDetails() {
               <Input
                 label="Contact No."
                 name="contactNo"
-                {...register("contactNo")}
+                important
+                {...register("contactNo", { required: "Country is required" })}
                 type="number"
                 placeholder="Enter Contact"
               />
+              {errors.contactNo && (
+                <p className="text-red-500 text-sm ml-[10px] mt-1">
+                  {errors.contactNo.message}
+                </p>
+              )}
               <Input
                 label="Unit"
                 {...register("unit")}

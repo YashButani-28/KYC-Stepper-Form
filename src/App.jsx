@@ -8,6 +8,9 @@ import Layout from "./components/Layout.jsx";
 import TermsDetails from "./components/forms/TermsDetails.jsx";
 import UserDetails from "./components/forms/UserDetails.jsx";
 import AddressDetails from "./components/forms/AddressDetails.jsx";
+import ViewDetails from "./components/forms/ViewDetails.jsx";
+import NotFound from "./components/forms/NotFound.jsx";
+import PrivateRoute from "./route/PrivateRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,24 +30,52 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
   {
+    path: "*",
+    element: <NotFound />,
+  },
+  {
     path: "/layout",
     element: <Layout />,
     children: [
       {
         path: "basic-details",
-        element: <BasicDetails />,
+        element: (
+          <PrivateRoute>
+            <BasicDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "terms-datails",
-        element: <TermsDetails />,
+        element: (
+          <PrivateRoute>
+            <TermsDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "user-details",
-        element: <UserDetails />,
+        element: (
+          <PrivateRoute>
+            <UserDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "address-details",
-        element: <AddressDetails />,
+        element: (
+          <PrivateRoute>
+            <AddressDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "view-details",
+        element: (
+          <PrivateRoute>
+            <ViewDetails />
+          </PrivateRoute>
+        ),
       },
     ],
   },

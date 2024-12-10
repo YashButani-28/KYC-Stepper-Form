@@ -8,7 +8,9 @@ const initialState = {
     form2: null,
     form3: null,
     form4: null,
-    currentForm: null, // Tracks the current form dynamically
+    currentForm: null, 
+    submitForm: null, // Tracks the current form dynamically
+    // Tracks the current form dynamically
   },
 };
 
@@ -36,6 +38,10 @@ const formSlice = createSlice({
     setCurrentForm(state, action) {
       state.kycForms.currentForm = action.payload;
     },
+
+    setSubmitForm(state, action) {
+      state.kycForms.submitForm = action.payload;
+    },
     // Clears all form data
     clearFormData(state) {
       state.kycForms.form1 = null;
@@ -43,11 +49,13 @@ const formSlice = createSlice({
       state.kycForms.form3 = null;
       state.kycForms.form4 = null;
       state.kycForms.currentForm = null;
+      state.kycForms.submitForm = null;
+
     },
   },
 });
 
-export const { setFormData, setCurrentForm, clearFormData } = formSlice.actions;
+export const { setFormData, setCurrentForm, clearFormData,setSubmitForm } = formSlice.actions;
 
 export default formSlice.reducer;
 
@@ -80,8 +88,7 @@ export const dataTransmit = (userId) => async (dispatch, getState) => {
 
       // Find the user object with the matching userId
       const user = users.find((user) => (user.id) == (userId));
-// console.log(typeof user.id)
-// console.log(typeof userId)
+
 
 
       if (user) {
@@ -99,6 +106,7 @@ export const dataTransmit = (userId) => async (dispatch, getState) => {
           `http://localhost:3000/users/${userId}`,
           updatedUser
         );
+        dispatch(setSubmitForm(true)); // Pass formId and data to the reducer
 
         console.log("User updated successfully:", updateResponse.data);
         console.log("All form data exported successfully!");
@@ -110,5 +118,47 @@ export const dataTransmit = (userId) => async (dispatch, getState) => {
     }
   } catch (error) {
     console.error("Failed to export form data:", error);
+  }
+};
+
+
+
+export const clearAllFormData = (userId) => async (dispatch) => {
+  try {
+    // Clear Redux state
+    dispatch(clearFormData());
+    console.log("Cleared form data from Redux state.");
+
+    // Fetch the user data
+    const response = await axios.get(`http://localhost:3000/users?id=${userId}`);
+    const user = response.data[0]; // Access the first user object
+
+    if (user) {
+      // Remove the kycForms field locally
+      delete user.kycForms;
+      console.log("Updated User (kycForms removed):", user);
+
+      // Update the user object on the server
+      await axios.put(`http://localhost:3000/users/${userId}`, user);
+      console.log("kycForms deleted successfully on server.");
+      // window.location.reload();
+    } else {
+      console.error("User not found.");
+    }
+  } catch (error) {
+    console.error("Failed to clear form data:", error);
+  }
+};
+
+
+
+
+export const editKycForm = () => async (dispatch) => {
+  try {
+    // Dispatch action to set the submit form state to null
+    dispatch(setSubmitForm(null));
+    console.log("Submit form reset to null.");
+  } catch (error) {
+    console.error("Failed to reset submit form:", error);
   }
 };

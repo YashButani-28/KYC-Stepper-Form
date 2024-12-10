@@ -152,6 +152,78 @@
         },
         "currentForm": 4
       }
+    },
+    {
+      "id": "3",
+      "role": "User",
+      "name": "Pavan Vasoya",
+      "email": "pavan@gmail.com",
+      "contact_no": "12121212121",
+      "password": "pavan@123",
+      "kycForms": {
+        "form1": {
+          "category": "Private Limited",
+          "businessType": "",
+          "company": "Butani",
+          "gstNo": "",
+          "primaryContact": "",
+          "primaryEmail": "asass@dsd",
+          "secondaryEmail": "",
+          "dob": "",
+          "country": "Brazil",
+          "countryCode": "+55",
+          "mobileNo": "",
+          "salesPerson": "",
+          "assistantSalesPerson": "",
+          "department": "",
+          "remark": "",
+          "regDate": ""
+        },
+        "form2": {
+          "currency": "CAD",
+          "dayTerm": "Net 60",
+          "termName": "",
+          "ExtPercent": "",
+          "ExtraPercent": "",
+          "creaditLimit": "",
+          "memoLimit": "",
+          "aadatParty": "",
+          "commAadat": "",
+          "broker1": "",
+          "commBroker1": "",
+          "RapPercent": ""
+        },
+        "form3": {
+          "terms": "Acceptable Use Policy",
+          "role": "Manager",
+          "username": "yash.Butani",
+          "email": "Hitem.m@gmail.com",
+          "password": "as",
+          "confirmPassword": "as",
+          "mobileNo": "",
+          "location": "",
+          "mumbaiPer": "",
+          "hongkongPer": "",
+          "newyorkPer": "",
+          "belgiumPer": ""
+        },
+        "form4": {
+          "addressType": "Permanent Address",
+          "companyName": "",
+          "contactNo": "1212",
+          "unit": "",
+          "building": "",
+          "street": "",
+          "landmark": "",
+          "area": "",
+          "country": "Australia",
+          "state": "Victoria",
+          "city": "Melbourne",
+          "zipcode": ""
+        },
+        "currentForm": 4,
+        "submitForm": null
+      }
     }
   ]
 }

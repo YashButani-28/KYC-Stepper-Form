@@ -15,7 +15,7 @@ const authPersistConfig={
 const formPersistConfig={
     key:"form",
     storage,
-    whitelist:["form1","form2","form3","form4","currentForm"], // Persist all forms
+    whitelist:["kycForms","form1","form2","form3","form4","currentForm","submitForm"], // Persist all forms
 };
 
 const rootReducer=combineReducers({

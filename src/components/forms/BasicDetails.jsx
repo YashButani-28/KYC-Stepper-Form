@@ -11,8 +11,9 @@ import { saveFormData } from "../../redux/slices/forms";
 
 export default function BasicDetails() {
   const { markStepCompleted } = useOutletContext();
-  const form1 = useSelector((state) => state.forms);
-  const BasicDetails = form1.kycForms.form1;
+  const form1 = useSelector((state) => state?.forms || {});
+
+  const BasicDetails = form1?.kycForms?.form1;
 
   const [submitAction, setSubmitAction] = useState("");
   // const form1 = useSelector((state) => state.form.kycForms.form1);
@@ -175,8 +176,8 @@ export default function BasicDetails() {
                 { value: "Proprietor", label: "Proprietor" },
                 { value: "Partnership", label: "Partnership" },
                 { value: "LLP", label: "LLP" },
-                { value: "PrivateLimited", label: "Private Limited" },
-                { value: "PublicLimited", label: "Public Limited" },
+                { value: "Private Limited", label: "Private Limited" },
+                { value: "Public Limited", label: "Public Limited" },
                 { value: "Others", label: "Others" },
               ]}
               onChange={(e) => {
